@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Peterson — a private community of exceptional minds with a shared ambition to build what comes next.">
+  <meta name="theme-color" content="#101d35">
+  <title>The Peterson Community</title>
+  <link rel="canonical" href="https://thepeterson.org/">
+  <link rel="icon" type="image/png" href="assets/peterson-logo.png">
+  <link rel="stylesheet" href="assets/fonts.css">
+  <link rel="stylesheet" href="style.css?v=20261120">
+</head>
+<body>
+  <a class="skip-link" href="#community">Skip to the community</a>
+  <header class="masthead" id="top">
+    <div class="masthead-inner">
+      <a class="logo" href="#top" aria-label="The Peterson Community — home"><img src="assets/peterson-logo.png" alt="The Peterson Community" width="2172" height="724"></a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="#community">The community</a>
+        <a href="#gatherings">Gatherings</a>
+        <a href="#membership">Membership</a>
+        <button class="text-button" data-apply>Apply for membership</button>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <section class="journey" id="journey" aria-label="Explore the Peterson community">
+      <div class="hero-stage">
+        <div class="hero-inner">
+          <div class="hero-intro">
+            <div class="title-column">
+              <p class="eyebrow">The Peterson Community</p>
+              <h1>For those building<br>what comes next.</h1>
+            </div>
+            <div class="invitation-column">
+              <p>Exceptional minds with a shared ambition:<br>A lasting contribution to the world.</p>
+              <button class="button brass" data-apply>Apply for membership</button>
+            </div>
+          </div>
+          <div class="network-row">
+            <div class="globe-wrap">
+              <img class="globe-poster" id="globePoster" src="assets/globe-montreal.png" alt="" width="1440" height="780" aria-hidden="true">
+              <canvas id="globe" width="1440" height="780" role="img" aria-label="A globe showing Peterson member cities Montréal, London and Shanghai."></canvas>
+              <div id="cityLabels" class="city-labels" aria-hidden="true"></div>
+              <button id="pauseMotion" class="globe-motion-button" type="button" aria-label="Pause globe rotation" aria-controls="globe" aria-pressed="false">Pause globe</button>
+              <span class="sr-only">Active member cities: Montréal, Canada; London, United Kingdom; Shanghai, China.</span>
+            </div>
+            <div class="narrative-column">
+              <div class="narrative" id="narrative" aria-live="polite" aria-atomic="true">
+                <p class="eyebrow" id="storyLabel">01 / Community</p>
+                <div class="fine-rule"></div>
+                <h2 id="storyTitle">A world of<br> possibility.</h2>
+                <p class="story-body" id="storyBody">Members in Montréal, London and Shanghai, united by a shared ambition to build what comes next.</p>
+                <p class="eyebrow metric" id="storyMetric">3 cities · 3 countries</p>
+              </div>
+            </div>
+          </div>
+          <div class="hero-caption">
+            <span>Montréal · London · Shanghai</span>
+            <nav class="chapter-nav" aria-label="Globe story chapters">
+              <button data-beat="0" aria-label="Community chapter" aria-current="step"><span class="chapter-line"></span><span class="sr-only">1</span></button>
+              <button data-beat="1" aria-label="Global reach chapter"><span class="chapter-line"></span><span class="sr-only">2</span></button>
+              <button data-beat="2" aria-label="Connections chapter"><span class="chapter-line"></span><span class="sr-only">3</span></button>
+            </nav>
+            <span class="scroll-cue">Scroll to explore</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section purpose" id="community">
+      <div class="section-inner two-columns">
+        <div><p class="eyebrow"><span class="coordinates" title="Montréal"><span class="sr-only">Montréal, </span>45.50° N · 73.57° W</span> / Our purpose</p><h2>A common ambition.<br>An uncommon company.</h2></div>
+        <div class="section-copy"><p>Peterson brings together exceptional people across disciplines to exchange ideas, contribute expertise, and pursue work of consequence.</p><p>Our ambition is to become the institution behind the next generation of industry-defining companies: outstanding in financial success and lasting in their positive impact.</p></div>
+      </div>
+    </section>
+    <section class="section gatherings" id="gatherings">
+      <div class="section-inner two-columns">
+        <div><p class="eyebrow"><span class="coordinates" title="London"><span class="sr-only">London, </span>51.51° N · 0.13° W</span> / The conversation begins</p><h2>The right people.<br>The important questions.</h2><p class="gatherings-intro">Private gatherings are where ideas meet experience, assumptions are challenged, and relationships begin.</p></div>
+        <div class="formats"><p class="eyebrow">The format</p><div>Expert perspectives<br>Open conversation<br>Lasting connections</div><p class="gathering-status">Our first gatherings are being developed.</p>
+          <form class="letters" id="lettersForm" novalidate data-endpoint="" data-email="info@thepeterson.org">
+            <label class="letters-title" for="lettersEmail">Letters from Peterson</label>
+            <p class="letters-copy" id="lettersHint">Hear first when gatherings are announced.</p>
+            <div class="letters-row">
+              <input id="lettersEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com" required aria-describedby="lettersHint lettersStatus">
+              <button class="button outline" type="submit">Notify me</button>
+            </div>
+            <p class="letters-status" id="lettersStatus" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+    <section class="section membership" id="membership">
+      <div class="section-inner membership-inner"><div><p class="eyebrow"><span class="coordinates" title="Shanghai"><span class="sr-only">Shanghai, </span>31.23° N · 121.47° E</span> / Membership</p><h2>Ability. Judgment. Contribution.</h2></div><button class="button navy" data-apply>Apply for membership</button></div>
+    </section>
+  </main>
+  <footer><div class="footer-inner"><span>The Peterson Community</span><small>A private community. An enduring ambition.</small></div></footer>
+  <dialog id="applicationDialog" aria-labelledby="applicationTitle">
+    <button class="close-dialog" type="button" aria-label="Close membership enquiry">×</button>
+    <p class="eyebrow">The Peterson Community</p>
+    <h2 id="applicationTitle">Membership enquiries</h2>
+    <p class="application-lede">Introduce yourself, share what you are working on, and tell us how you would like to contribute to Peterson.</p>
+    <!-- Enquiries open a prefilled email to data-email. To post them to a form service
+         instead (Formspree, Basin, a serverless function), put its URL in data-endpoint. -->
+    <form class="application" id="applicationForm" novalidate data-endpoint="" data-email="info@thepeterson.org">
+      <ol class="application-progress" aria-label="Enquiry progress">
+        <li aria-current="step">Introduce yourself</li>
+        <li>Your work</li>
+        <li>Your contribution</li>
+      </ol>
+      <fieldset class="application-step" data-step="0">
+        <legend>Introduce yourself</legend>
+        <div class="field">
+          <label for="applicantName">Name</label>
+          <input id="applicantName" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="applicantEmail">Email</label>
+          <input id="applicantEmail" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="applicantLink">LinkedIn or website <span class="optional">Optional</span></label>
+          <input id="applicantLink" name="link" type="text" inputmode="url" autocomplete="url">
+        </div>
+        <fieldset class="choices">
+          <legend>Closest city</legend>
+          <label class="choice"><input type="radio" name="city" value="Montréal"><span>Montréal</span></label>
+          <label class="choice"><input type="radio" name="city" value="London"><span>London</span></label>
+          <label class="choice"><input type="radio" name="city" value="Shanghai"><span>Shanghai</span></label>
+          <label class="choice"><input type="radio" name="city" value="Elsewhere"><span>Elsewhere</span></label>
+        </fieldset>
+      </fieldset>
+      <fieldset class="application-step" data-step="1" hidden>
+        <legend>What are you working on?</legend>
+        <div class="field">
+          <label class="sr-only" for="applicantWork">What you are working on</label>
+          <textarea id="applicantWork" name="work" rows="6" maxlength="1000" required aria-describedby="applicantWorkHint"></textarea>
+          <p class="field-hint" id="applicantWorkHint">A few sentences is plenty: what you are building, and why it matters to you.</p>
+        </div>
+      </fieldset>
+      <fieldset class="application-step" data-step="2" hidden>
+        <legend>How would you like to contribute?</legend>
+        <fieldset class="choices">
+          <legend class="sr-only">Ways to contribute</legend>
+          <label class="choice"><input type="checkbox" name="contribute" value="Expertise"><span>Expertise</span></label>
+          <label class="choice"><input type="checkbox" name="contribute" value="Introductions"><span>Introductions</span></label>
+          <label class="choice"><input type="checkbox" name="contribute" value="Capital"><span>Capital</span></label>
+          <label class="choice"><input type="checkbox" name="contribute" value="Hosting a gathering"><span>Hosting a gathering</span></label>
+          <label class="choice"><input type="checkbox" name="contribute" value="Mentoring"><span>Mentoring</span></label>
+          <label class="choice"><input type="checkbox" name="contribute" value="Research"><span>Research</span></label>
+        </fieldset>
+        <div class="field">
+          <label for="applicantNote">Anything to add <span class="optional">Optional</span></label>
+          <textarea id="applicantNote" name="note" rows="3" maxlength="600"></textarea>
+        </div>
+      </fieldset>
+      <div class="application-done" id="applicationDone" tabindex="-1" hidden>
+        <h3>Thank you.</h3>
+        <p></p>
+        <div class="copy-fallback" hidden>
+          <label for="applicationText">Your enquiry</label>
+          <textarea id="applicationText" rows="7" readonly></textarea>
+          <button type="button" class="text-button" data-copy>Copy text</button>
+        </div>
+      </div>
+      <p class="form-status" id="applicationStatus" role="status" aria-live="polite"></p>
+      <div class="application-actions">
+        <button type="button" class="text-button" data-back hidden>Back</button>
+        <button type="button" class="button navy" data-next>Continue</button>
+        <button type="submit" class="button navy" data-submit hidden>Send enquiry</button>
+      </div>
+    </form>
+    <p class="dialog-note">Membership conversations take place privately. You can also write to <a href="mailto:info@thepeterson.org?subject=Membership%20enquiry">info@thepeterson.org</a>.</p>
+  </dialog>
+  <script src="page.js?v=20261120"></script>
+  <script src="globe.js?v=20261120"></script>
+</body>
+</html>
