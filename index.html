@@ -9,13 +9,13 @@
   <link rel="canonical" href="https://thepeterson.org/">
   <link rel="icon" type="image/png" href="assets/peterson-logo.png">
   <link rel="stylesheet" href="assets/fonts.css">
-  <link rel="stylesheet" href="style.css?v=interactive-1">
+  <link rel="stylesheet" href="style.css?v=interactive-2">
 </head>
 <body>
   <a class="skip-link" href="#community">Skip to the community</a>
   <header class="masthead" id="top">
     <div class="masthead-inner">
-      <a class="logo" href="#top" aria-label="The Peterson Community — home"><img src="assets/peterson-logo.png" alt="The Peterson Community" width="2172" height="724"></a>
+      <a class="logo" href="#top" aria-label="The Peterson Community — home"><img src="assets/peterson-logo.png" alt="The Peterson Community" width="700" height="233"></a>
       <nav class="main-nav" aria-label="Main navigation">
         <a href="#community">The community</a>
         <a href="#gatherings">Gatherings</a>
@@ -25,54 +25,65 @@
     </div>
   </header>
   <main>
-    <section class="journey" id="journey" aria-label="Explore the Peterson community">
-      <div class="hero-stage">
-        <div class="hero-inner">
-          <div class="hero-intro">
-            <div class="title-column">
-              <p class="eyebrow">The Peterson Community</p>
-              <h1>For those building<br>what comes next.</h1>
-            </div>
-            <div class="invitation-column">
-              <p>Exceptional minds with a shared ambition:<br>A lasting contribution to the world.</p>
-              <button class="button brass" data-apply>Apply for membership</button>
-            </div>
+    <section class="hero" id="journey" aria-label="The Peterson community">
+      <div class="hero-inner">
+        <div class="hero-intro">
+          <div class="title-column">
+            <p class="eyebrow">The Peterson Community</p>
+            <h1>For those building<br>what comes next.</h1>
           </div>
-          <div class="network-row">
-            <div class="globe-wrap">
-              <img class="globe-poster" id="globePoster" src="assets/globe-montreal.png" alt="" width="1440" height="780" aria-hidden="true">
-              <canvas id="globe" width="1440" height="780" tabindex="0" role="img" aria-label="A globe showing Peterson member cities Montréal, London and Shanghai. Drag it, or use the arrow keys, to spin it."></canvas>
-              <div id="cityLabels" class="city-labels"></div>
-              <p class="globe-hint" id="globeHint" aria-hidden="true">Drag to spin · Choose a city</p>
-              <div class="city-card" id="cityCard" role="status" hidden>
-                <button class="city-card-close" type="button" aria-label="Close city details">×</button>
-                <p class="city-card-eyebrow"></p>
-                <p class="city-card-time"></p>
-                <p class="city-card-detail"></p>
-                <p class="city-card-note"></p>
-              </div>
-              <button id="pauseMotion" class="globe-motion-button" type="button" aria-label="Pause globe rotation" aria-controls="globe" aria-pressed="false">Pause globe</button>
-              <span class="sr-only">Active member cities: Montréal, Canada; London, United Kingdom; Shanghai, China.</span>
-            </div>
-            <div class="narrative-column">
-              <div class="narrative" id="narrative" aria-live="polite" aria-atomic="true">
-                <p class="eyebrow" id="storyLabel">01 / Community</p>
-                <div class="fine-rule"></div>
-                <h2 id="storyTitle">A world of<br> possibility.</h2>
-                <p class="story-body" id="storyBody">Members in Montréal, London and Shanghai, united by a shared ambition to build what comes next.</p>
-                <p class="eyebrow metric" id="storyMetric">3 cities · 3 countries</p>
-              </div>
-            </div>
+          <div class="invitation-column">
+            <p>Exceptional minds with a shared ambition:<br>A lasting contribution to the world.</p>
+            <button class="button brass" data-apply>Apply for membership</button>
           </div>
-          <div class="hero-caption">
-            <span>Montréal · London · Shanghai</span>
-            <nav class="chapter-nav" aria-label="Globe story chapters">
-              <button data-beat="0" aria-label="Community chapter" aria-current="step"><span class="chapter-line"></span><span class="sr-only">1</span></button>
-              <button data-beat="1" aria-label="Global reach chapter"><span class="chapter-line"></span><span class="sr-only">2</span></button>
-              <button data-beat="2" aria-label="Connections chapter"><span class="chapter-line"></span><span class="sr-only">3</span></button>
-            </nav>
-            <span class="scroll-cue">Scroll to explore</span>
+        </div>
+        <div class="network-row">
+          <div class="globe-stage">
+            <canvas id="globe" tabindex="0" role="img" aria-label="A globe drawn in binary digits, with Peterson member cities Montréal, London and Shanghai. Drag it, or use the arrow keys, to spin it."></canvas>
           </div>
+          <div class="globe-panel">
+            <div class="place-tabs" role="tablist" aria-label="Choose a city">
+              <button type="button" role="tab" id="tab-montreal" data-city="montreal" aria-controls="placeCard" aria-selected="true">Montréal</button>
+              <button type="button" role="tab" id="tab-london" data-city="london" aria-controls="placeCard" aria-selected="false" tabindex="-1">London</button>
+              <button type="button" role="tab" id="tab-shanghai" data-city="shanghai" aria-controls="placeCard" aria-selected="false" tabindex="-1">Shanghai</button>
+              <button type="button" role="tab" id="tab-you" data-city="you" aria-controls="placeCard" aria-selected="false" tabindex="-1">You</button>
+            </div>
+            <div class="place-card" id="placeCard" role="tabpanel" aria-labelledby="tab-montreal" aria-live="polite">
+              <p class="place-coords" id="placeCoords">45.50° N · 73.57° W</p>
+              <p class="place-name" id="placeName">Montréal</p>
+              <dl class="place-facts">
+                <div><dt>Local time</dt><dd id="placeTime">--:--</dd></div>
+                <div><dt id="placeLabel2">Right now</dt><dd id="placeSun">–</dd></div>
+                <div><dt id="placeLabel3">From you</dt><dd id="placeDistance">–</dd></div>
+              </dl>
+              <p class="place-note" id="placeNote"></p>
+            </div>
+            <div class="globe-foot">
+              <p class="globe-legend"><span><i class="key day"></i>Daylight</span><span><i class="key night"></i>After dark</span><span><i class="key route"></i>Links between cities</span></p>
+              <button id="pauseMotion" class="globe-motion-button" type="button" aria-controls="globe" aria-pressed="false">Pause globe</button>
+            </div>
+            <p class="globe-hint">Drag the globe to spin it.</p>
+          </div>
+        </div>
+        <div class="chapters">
+          <article class="chapter">
+            <p class="eyebrow">01 / Community</p>
+            <h2>A world of possibility.</h2>
+            <p class="chapter-body">Members in Montréal, London and Shanghai, united by a shared ambition to build what comes next.</p>
+            <p class="eyebrow metric">3 cities · 3 countries</p>
+          </article>
+          <article class="chapter">
+            <p class="eyebrow">02 / Global reach</p>
+            <h2>Members across 3 countries.</h2>
+            <p class="chapter-body">Across disciplines and borders, a shared standard of ability, judgment and contribution.</p>
+            <p class="eyebrow metric">Montréal · London · Shanghai</p>
+          </article>
+          <article class="chapter">
+            <p class="eyebrow">03 / Connection</p>
+            <h2>Connections of consequence.</h2>
+            <p class="chapter-body">Exchange insight, find collaborators and contribute to the ambitions of your peers.</p>
+            <p class="eyebrow metric">An international community</p>
+          </article>
         </div>
       </div>
     </section>
@@ -241,8 +252,8 @@
     </form>
     <p class="dialog-note">Membership conversations take place privately. You can also write to <a href="mailto:info@thepeterson.org?subject=Membership%20enquiry">info@thepeterson.org</a>.</p>
   </dialog>
-  <script src="page.js?v=interactive-1"></script>
-  <script src="features.js?v=interactive-1"></script>
-  <script src="globe.js?v=interactive-1"></script>
+  <script src="page.js?v=interactive-2"></script>
+  <script src="features.js?v=interactive-2"></script>
+  <script src="globe.js?v=interactive-2"></script>
 </body>
 </html>

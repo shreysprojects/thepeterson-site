@@ -88,7 +88,7 @@
 
   // Section headlines wait in binary below the fold and resolve when they scroll into view.
   if ('IntersectionObserver' in window && !motion.matches) {
-    const headings = document.querySelectorAll('main .section h2');
+    const headings = document.querySelectorAll('main .section h2, .chapter h2');
     const watcher = new IntersectionObserver(entries => entries.forEach(entry => {
       if (!entry.isIntersecting) return;
       watcher.unobserve(entry.target);
@@ -282,6 +282,20 @@
       return `M${p.x.toFixed(1)} ${p.y.toFixed(1)} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${q.x.toFixed(1)} ${q.y.toFixed(1)}`;
     };
     const line = (a, b, kind) => make('path', { d: curve(a, b), class: `gt-line ${kind}` }, lines);
+    let tableVisible = true;
+    const talkRound = () => {
+      for (let i = 0; i < 3; i++) {
+        const a = Math.floor(Math.random() * seats.length);
+        let b = Math.floor(Math.random() * (seats.length - 1));
+        if (b >= a) b++;
+        talked.add(a < b ? `${a}-${b}` : `${b}-${a}`);
+        if (motion.matches) line(a, b, 'still');
+        else {
+          const node = line(a, b, 'talk');
+          setTimeout(() => node.remove(), 1800);
+        }
+      }
+    };
 
     function setMode(next) {
       mode = next;
@@ -295,21 +309,9 @@
         seats.forEach((seat, index) => { if (index !== speaker) line(speaker, index, 'expert'); });
       }
       if (next === 'talk') {
-        const round = () => {
-          for (let i = 0; i < 3; i++) {
-            const a = Math.floor(Math.random() * seats.length);
-            let b = Math.floor(Math.random() * (seats.length - 1));
-            if (b >= a) b++;
-            talked.add(a < b ? `${a}-${b}` : `${b}-${a}`);
-            if (motion.matches) line(a, b, 'still');
-            else {
-              const node = line(a, b, 'talk');
-              setTimeout(() => node.remove(), 1800);
-            }
-          }
-        };
-        round();
-        if (motion.matches) round(); else talkTimer = setInterval(round, 900);
+        talkRound();
+        if (motion.matches) talkRound();
+        else if (tableVisible) talkTimer = setInterval(talkRound, 900);
       }
       if (next === 'kept') {
         const pairs = talked.size >= 10 ? [...talked].slice(0, 16).map(key => key.split('-').map(Number)) : keptPairs;
@@ -333,6 +335,20 @@
     }));
     figure.classList.add('is-ready');
     setMode('seated');
+
+    // Stop the table's animation while it is off-screen.
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([entry]) => {
+        tableVisible = entry.isIntersecting;
+        figure.classList.toggle('is-offscreen', !tableVisible);
+        if (!tableVisible) {
+          clearInterval(talkTimer);
+          talkTimer = 0;
+        } else if (mode === 'talk' && !talkTimer && !motion.matches) {
+          talkTimer = setInterval(talkRound, 900);
+        }
+      }).observe(figure);
+    }
 
     // Play the evening once when the table first comes into view.
     if ('IntersectionObserver' in window && !motion.matches) {
