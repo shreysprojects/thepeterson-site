@@ -365,9 +365,9 @@
     const action = codeButton.querySelector('.code-action');
     const show = decoded => {
       codeButton.setAttribute('aria-pressed', String(decoded));
-      codeButton.setAttribute('aria-label', decoded ? `Decoded: ${phrase}. The globe is written in it too.` : 'A phrase written in binary. Decode it.');
+      codeButton.setAttribute('aria-label', decoded ? `Decoded: ${phrase}. The globe’s digits come from this phrase.` : 'A phrase written in binary. Decode it.');
       text.textContent = decoded ? phrase : bits;
-      action.textContent = decoded ? 'The globe is written in it too' : 'Decode';
+      action.textContent = decoded ? 'The globe’s digits come from this phrase' : 'Decode';
       if (decoded) decode(text, { duration: 700 });
     };
     show(false);

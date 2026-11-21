@@ -125,7 +125,7 @@
   };
   function arcPoints(a, b) {
     const A = vec(a.lat, a.lon), B = vec(b.lat, b.lon);
-    const omega = Math.acos(clamp(dot(A, B), -1, 1)), sine = Math.sin(omega) || 1, lift = .06 + .16 * omega / Math.PI;
+    const omega = Math.acos(clamp(dot(A, B), -1, 1)), sine = Math.sin(omega) || 1, lift = .03 + .08 * omega / Math.PI;
     const points = [];
     for (let k = 0; k <= 72; k++) {
       const t = k / 72, s1 = Math.sin((1 - t) * omega) / sine, s2 = Math.sin(t * omega) / sine, h = 1 + lift * Math.sin(Math.PI * t);
@@ -249,65 +249,105 @@
       const pu = dot(p, e), pv = dot(p, n);
       return [centre + pu * radius, centre - pv * radius, dot(p, f), pu * pu + pv * pv];
     };
-    const dashOffset = live ? -now / 45 : 0;
-    const route = (points, color, alpha, dash) => {
-      ctx.beginPath();
-      let pen = false;
-      for (const point of points) {
-        const q = project(point);
-        if (q[2] > 0 || q[3] > 1) {
-          if (pen) ctx.lineTo(q[0], q[1]); else { ctx.moveTo(q[0], q[1]); pen = true; }
-        } else {
-          pen = false;
-        }
+    // How much of a point shows: all of it on the near side, fading out towards the horizon,
+    // so a route never hooks round the edge of the globe.
+    const shown = q => clamp((q[2] + .02) / .22, 0, 1);
+    ctx.lineCap = 'round';
+
+    // Routes: fine solid arcs that fade over the horizon. Now and then a soft light travels
+    // along each one, from the first city to the second.
+    const route = (points, color, alpha, glint) => {
+      const projected = points.map(project);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1;
+      for (let k = 1; k < projected.length; k++) {
+        const visibility = Math.min(shown(projected[k - 1]), shown(projected[k]));
+        if (visibility <= 0) continue;
+        ctx.globalAlpha = alpha * visibility;
+        ctx.beginPath();
+        ctx.moveTo(projected[k - 1][0], projected[k - 1][1]);
+        ctx.lineTo(projected[k][0], projected[k][1]);
+        ctx.stroke();
       }
-      ctx.strokeStyle = color; ctx.globalAlpha = alpha; ctx.lineWidth = 1.3;
-      ctx.setLineDash(dash); ctx.lineDashOffset = dashOffset;
-      ctx.stroke();
+      if (glint < 0) return;
+      const head = glint * (projected.length - 1), trail = 10;
+      ctx.lineWidth = 1.6;
+      for (let k = Math.max(1, Math.floor(head - trail)); k <= Math.min(projected.length - 1, Math.floor(head)); k++) {
+        const visibility = Math.min(shown(projected[k - 1]), shown(projected[k]));
+        if (visibility <= 0) continue;
+        ctx.globalAlpha = .95 * visibility * clamp(1 - (head - k) / trail, 0, 1);
+        ctx.beginPath();
+        ctx.moveTo(projected[k - 1][0], projected[k - 1][1]);
+        ctx.lineTo(projected[k][0], projected[k][1]);
+        ctx.stroke();
+      }
     };
-    routes.forEach(points => route(points, palette.brass, .9, [3, 5]));
-    if (visitorRoute) route(visitorRoute, palette.ivory, .5, [1.5, 4]);
-    ctx.setLineDash([]); ctx.lineDashOffset = 0; ctx.globalAlpha = 1;
+    // Each light takes about 2.8 s to travel and then rests; the two routes take turns.
+    const glintAt = offset => {
+      if (!live) return -1;
+      const t = (now / 7000 + offset) % 1;
+      if (t >= .4) return -1;
+      const s = t / .4;
+      return s * (2 - s);
+    };
+    route(routes[0], palette.brass, .5, glintAt(0));
+    route(routes[1], palette.brass, .5, glintAt(.5));
+    if (visitorRoute && selected === 'you') route(visitorRoute, palette.ivory, .35, -1);
+    ctx.globalAlpha = 1;
 
     marks = [];
-    const pulse = live ? (now % 2200) / 2200 : .35;
-    ctx.font = '500 12px "IBM Plex Sans", Arial, sans-serif';
+    ctx.font = '500 10.5px "IBM Plex Sans", Arial, sans-serif';
+    if ('letterSpacing' in ctx) ctx.letterSpacing = '1.5px';
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'left';
-    const label = (text, px, py, alpha, color) => {
-      const width = ctx.measureText(text).width;
-      const left = px < centre + radius * .42 ? px + 12 : px - 20 - width;
-      ctx.globalAlpha = alpha * .85; ctx.fillStyle = palette.navy;
-      ctx.fillRect(left, py - 10, width + 8, 20);
-      ctx.globalAlpha = alpha; ctx.fillStyle = color;
-      ctx.fillText(text, left + 4, py + .5);
+    ctx.lineJoin = 'round';
+    // Labels sit on the map like printed type: small capitals with a navy halo, no boxes.
+    const label = (text, px, py, alpha, color, flip = false) => {
+      const caps = text.toUpperCase();
+      const width = ctx.measureText(caps).width;
+      const onRight = (px < centre + radius * .45) !== flip;
+      const left = onRight ? px + 11 : px - 11 - width;
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = palette.navy;
+      ctx.lineWidth = 4;
+      ctx.strokeText(caps, left, py);
+      ctx.fillStyle = color;
+      ctx.fillText(caps, left, py);
     };
+    // Cities: a steady brass point with a soft glow. The chosen city gets a fine ring.
     cities.forEach(city => {
       const q = project(vec(city.lat, city.lon));
       if (q[2] <= .02) return;
       const alpha = clamp(q[2] * 4, 0, 1);
-      ctx.globalAlpha = alpha; ctx.strokeStyle = palette.brass; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.arc(q[0], q[1], 6.5, 0, Math.PI * 2); ctx.stroke();
+      const chosen = city.id === selected;
+      const glow = ctx.createRadialGradient(q[0], q[1], 0, q[0], q[1], 12);
+      glow.addColorStop(0, rgba(palette.brass, .35));
+      glow.addColorStop(1, rgba(palette.brass, 0));
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.arc(q[0], q[1], 12, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = palette.brass;
-      ctx.beginPath(); ctx.arc(q[0], q[1], 2.6, 0, Math.PI * 2); ctx.fill();
-      if (city.id === selected) {
-        ctx.globalAlpha = alpha * (1 - pulse) * .9;
-        ctx.beginPath(); ctx.arc(q[0], q[1], 7 + pulse * 15, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(q[0], q[1], chosen ? 3.8 : 3, 0, Math.PI * 2); ctx.fill();
+      if (chosen) {
+        ctx.globalAlpha = alpha * .8;
+        ctx.strokeStyle = palette.brass; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(q[0], q[1], 8, 0, Math.PI * 2); ctx.stroke();
       }
-      label(city.name, q[0], q[1], alpha, palette.ivory);
+      label(city.name, q[0], q[1], alpha * (chosen ? 1 : .85), chosen ? palette.brass : palette.ivory);
       marks.push({ id: city.id, x: q[0], y: q[1] });
     });
+    // You: a small open circle, labelled only when chosen.
     const q = project(vec(visitor.lat, visitor.lon));
     if (q[2] > .02) {
       const alpha = clamp(q[2] * 4, 0, 1);
-      ctx.globalAlpha = alpha; ctx.strokeStyle = palette.ivory; ctx.lineWidth = 1.2; ctx.setLineDash([2, 3]);
-      ctx.beginPath(); ctx.arc(q[0], q[1], selected === 'you' ? 9 : 7, 0, Math.PI * 2); ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle = palette.ivory;
-      ctx.beginPath(); ctx.arc(q[0], q[1], 1.8, 0, Math.PI * 2); ctx.fill();
-      if (!visitorIsHome) label('You', q[0], q[1] + 16, alpha * .9, palette.muted);
+      ctx.globalAlpha = alpha * .85;
+      ctx.strokeStyle = palette.ivory; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(q[0], q[1], selected === 'you' ? 4.5 : 3.5, 0, Math.PI * 2); ctx.stroke();
+      // Opposite side to the city labels, so it never collides with a nearby city.
+      if (selected === 'you') label('You', q[0], q[1], alpha, palette.ivory, true);
       marks.push({ id: 'you', x: q[0], y: q[1] });
     }
+    if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
     ctx.globalAlpha = 1;
   }
 
