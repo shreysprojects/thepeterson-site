@@ -40,13 +40,6 @@
     return glyphs && glyphs.length && element.contains(glyphs[0]) ? glyphs : prepare(element);
   }
 
-  function encode(element) {
-    glyphsFor(element).forEach(glyph => {
-      glyph.classList.add('is-encoded');
-      glyph.dataset.d = randomDigit();
-    });
-  }
-
   function decode(element, { duration = 900 } = {}) {
     if (!element || motion.matches) return;
     const glyphs = glyphsFor(element);
@@ -80,25 +73,13 @@
   }
   window.petersonDecode = decode;
 
-  const hero = document.querySelector('.title-column h1');
+  const hero = document.querySelector('.hero h1');
   if (hero && !motion.matches) {
     const start = () => setTimeout(() => decode(hero, { duration: 1100 }), 250);
     if (document.fonts) document.fonts.ready.then(start); else start();
   }
 
-  // Section headlines wait in binary below the fold and resolve when they scroll into view.
-  if ('IntersectionObserver' in window && !motion.matches) {
-    const headings = document.querySelectorAll('main .section h2, .chapter h2');
-    const watcher = new IntersectionObserver(entries => entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      watcher.unobserve(entry.target);
-      decode(entry.target);
-    }), { threshold: .4 });
-    headings.forEach(heading => {
-      encode(heading);
-      watcher.observe(heading);
-    });
-  }
+  // In the Meridian layout only the hero line decodes; section headlines stay still.
 
   /* The question deck: draw questions one at a time, or bring your own. */
   const deck = document.querySelector('#questionDeck');
