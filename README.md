@@ -4,7 +4,7 @@ The static site for thepeterson.org, published with GitHub Pages from the `main`
 
 ## What's on the page
 
-- `globe.js`: the binary globe. Drag it or use the arrow keys to spin it, and choose a city label to fly there and see its local time, daylight and distance. Night is drawn in gold from the sun's real position. A "You" marker is placed from the visitor's device time zone; nothing is looked up or sent. The digits spell "what comes next" in ASCII.
+- `globe.js`: the binary globe in the hero. Drag it or use the arrow keys to spin it, and choose a city on the globe or in the panel beside it to fly there and see its local time, daylight and distance. Night is drawn in gold from the sun's real position. A "You" marker is placed from the visitor's device time zone; nothing is looked up or sent. The digits spell "what comes next" in ASCII. Land outlines (Natural Earth) are embedded in the script, and drawing stops whenever the globe is off-screen.
 - `features.js`: headlines that decode from binary on first view, the question deck, the seat-at-the-table view of the gathering format, live city clocks, and the footer phrase.
 - `page.js`: the three-step membership enquiry and the Letters sign-up.
 
@@ -19,7 +19,7 @@ The membership enquiry and the Letters sign-up in `index.html` each carry `data-
 
 ## Preview locally
 
-The globe loads `assets/land.geojson`, so serve the folder instead of opening `index.html` directly:
+Serve the folder so it behaves as it does on GitHub Pages:
 
 ```bash
 python3 -m http.server 8000
