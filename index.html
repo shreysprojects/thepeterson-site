@@ -9,7 +9,7 @@
   <link rel="canonical" href="https://thepeterson.org/">
   <link rel="icon" type="image/png" href="assets/peterson-logo.png">
   <link rel="stylesheet" href="assets/fonts.css">
-  <link rel="stylesheet" href="style.css?v=20261120">
+  <link rel="stylesheet" href="style.css?v=interactive-1">
 </head>
 <body>
   <a class="skip-link" href="#community">Skip to the community</a>
@@ -41,8 +41,16 @@
           <div class="network-row">
             <div class="globe-wrap">
               <img class="globe-poster" id="globePoster" src="assets/globe-montreal.png" alt="" width="1440" height="780" aria-hidden="true">
-              <canvas id="globe" width="1440" height="780" role="img" aria-label="A globe showing Peterson member cities Montréal, London and Shanghai."></canvas>
-              <div id="cityLabels" class="city-labels" aria-hidden="true"></div>
+              <canvas id="globe" width="1440" height="780" tabindex="0" role="img" aria-label="A globe showing Peterson member cities Montréal, London and Shanghai. Drag it, or use the arrow keys, to spin it."></canvas>
+              <div id="cityLabels" class="city-labels"></div>
+              <p class="globe-hint" id="globeHint" aria-hidden="true">Drag to spin · Choose a city</p>
+              <div class="city-card" id="cityCard" role="status" hidden>
+                <button class="city-card-close" type="button" aria-label="Close city details">×</button>
+                <p class="city-card-eyebrow"></p>
+                <p class="city-card-time"></p>
+                <p class="city-card-detail"></p>
+                <p class="city-card-note"></p>
+              </div>
               <button id="pauseMotion" class="globe-motion-button" type="button" aria-label="Pause globe rotation" aria-controls="globe" aria-pressed="false">Pause globe</button>
               <span class="sr-only">Active member cities: Montréal, Canada; London, United Kingdom; Shanghai, China.</span>
             </div>
@@ -76,8 +84,20 @@
     </section>
     <section class="section gatherings" id="gatherings">
       <div class="section-inner two-columns">
-        <div><p class="eyebrow"><span class="coordinates" title="London"><span class="sr-only">London, </span>51.51° N · 0.13° W</span> / The conversation begins</p><h2>The right people.<br>The important questions.</h2><p class="gatherings-intro">Private gatherings are where ideas meet experience, assumptions are challenged, and relationships begin.</p></div>
-        <div class="formats"><p class="eyebrow">The format</p><div>Expert perspectives<br>Open conversation<br>Lasting connections</div><p class="gathering-status">Our first gatherings are being developed.</p>
+        <div><p class="eyebrow"><span class="coordinates" title="London"><span class="sr-only">London, </span>51.51° N · 0.13° W</span> / The conversation begins</p><h2>The right people.<br>The important questions.</h2><p class="gatherings-intro">Private gatherings are where ideas meet experience, assumptions are challenged, and relationships begin.</p>
+          <figure class="gathering-table" id="gatheringTable">
+            <svg viewBox="0 0 640 420" role="group" aria-label="An illustrative dinner table of ten guests, one from each discipline"></svg>
+            <div class="seat-chips" role="group" aria-label="Seats at the table"></div>
+            <figcaption aria-live="polite">An illustrative table of ten, one guest from each discipline.</figcaption>
+          </figure>
+        </div>
+        <div class="formats"><p class="eyebrow">The format</p>
+          <div class="format-steps" role="group" aria-label="Show each part of a gathering at the table">
+            <button type="button" data-format="expert" aria-pressed="false">Expert perspectives</button>
+            <button type="button" data-format="talk" aria-pressed="false">Open conversation</button>
+            <button type="button" data-format="kept" aria-pressed="false">Lasting connections</button>
+          </div>
+          <p class="format-hint">Choose a part of the evening to see it at the table.</p><p class="gathering-status">Our first gatherings are being developed.</p>
           <form class="letters" id="lettersForm" novalidate data-endpoint="" data-email="info@thepeterson.org">
             <label class="letters-title" for="lettersEmail">Letters from Peterson</label>
             <p class="letters-copy" id="lettersHint">Hear first when gatherings are announced.</p>
@@ -90,11 +110,56 @@
         </div>
       </div>
     </section>
+    <section class="section questions" id="questions" aria-labelledby="questionsTitle">
+      <div class="section-inner questions-inner">
+        <div class="questions-intro">
+          <p class="eyebrow">The important questions</p>
+          <h2 id="questionsTitle">Questions worth<br>an evening.</h2>
+          <p class="questions-lede">Each gathering begins with one question. Draw one from the deck, or bring your own.</p>
+        </div>
+        <div class="deck" id="questionDeck">
+          <ol class="deck-cards">
+            <li>What would it take to build a company that is still worth working for in a hundred years?</li>
+            <li>Which industry will be rebuilt from first principles before 2035, and who should be in the room when it is?</li>
+            <li>Can financial success and lasting public good be measured on the same balance sheet?</li>
+            <li>What do you believe about your field that most experts would still dispute?</li>
+            <li>If you had to design one institution from scratch today, what would it be?</li>
+            <li>Which bet looks reckless today and obvious in fifteen years?</li>
+            <li>What does Montréal understand that London does not, and what has Shanghai seen that both have missed?</li>
+            <li>How do you recognise good judgment before it has a track record?</li>
+            <li>What should the next generation of founders refuse to optimise for?</li>
+            <li>Which problem is too important to leave to a single discipline?</li>
+            <li>What would you build with ten years, no pressure to exit, and the right three collaborators?</li>
+            <li>Where will your industry’s best people come from in the next decade?</li>
+          </ol>
+          <div class="deck-controls">
+            <button class="button navy" type="button" data-deck-next>Draw the next question</button>
+            <span class="deck-count"></span>
+          </div>
+          <p class="sr-only deck-live" aria-live="polite"></p>
+          <form class="deck-form" id="deckForm" novalidate>
+            <label for="deckQuestion">What question would you bring?</label>
+            <div class="deck-row">
+              <input id="deckQuestion" name="question" type="text" maxlength="160" autocomplete="off" placeholder="What should a hundred-year company refuse to measure?">
+              <button class="button outline-navy" type="submit">Bring it to Peterson</button>
+            </div>
+            <p class="deck-hint">This adds it to the deck and opens the membership enquiry with your question filled in.</p>
+          </form>
+        </div>
+      </div>
+    </section>
     <section class="section membership" id="membership">
       <div class="section-inner membership-inner"><div><p class="eyebrow"><span class="coordinates" title="Shanghai"><span class="sr-only">Shanghai, </span>31.23° N · 121.47° E</span> / Membership</p><h2>Ability. Judgment. Contribution.</h2></div><button class="button navy" data-apply>Apply for membership</button></div>
     </section>
   </main>
-  <footer><div class="footer-inner"><span>The Peterson Community</span><small>A private community. An enduring ambition.</small></div></footer>
+  <footer>
+    <div class="footer-inner">
+      <span>The Peterson Community</span>
+      <p class="footer-clocks"><span class="sr-only">Local time: </span><span>Montréal<time data-tz="America/Toronto"></time></span><span>London<time data-tz="Europe/London"></time></span><span>Shanghai<time data-tz="Asia/Shanghai"></time></span></p>
+      <small>A private community. An enduring ambition.</small>
+      <button class="footer-code" id="footerCode" type="button" aria-pressed="false"><span class="code-text"></span><span class="code-action">Decode</span></button>
+    </div>
+  </footer>
   <dialog id="applicationDialog" aria-labelledby="applicationTitle">
     <button class="close-dialog" type="button" aria-label="Close membership enquiry">×</button>
     <p class="eyebrow">The Peterson Community</p>
@@ -137,6 +202,10 @@
           <textarea id="applicantWork" name="work" rows="6" maxlength="1000" required aria-describedby="applicantWorkHint"></textarea>
           <p class="field-hint" id="applicantWorkHint">A few sentences is plenty: what you are building, and why it matters to you.</p>
         </div>
+        <div class="field">
+          <label for="applicantQuestion">A question you would bring <span class="optional">Optional</span></label>
+          <textarea id="applicantQuestion" name="question" rows="2" maxlength="200"></textarea>
+        </div>
       </fieldset>
       <fieldset class="application-step" data-step="2" hidden>
         <legend>How would you like to contribute?</legend>
@@ -172,7 +241,8 @@
     </form>
     <p class="dialog-note">Membership conversations take place privately. You can also write to <a href="mailto:info@thepeterson.org?subject=Membership%20enquiry">info@thepeterson.org</a>.</p>
   </dialog>
-  <script src="page.js?v=20261120"></script>
-  <script src="globe.js?v=20261120"></script>
+  <script src="page.js?v=interactive-1"></script>
+  <script src="features.js?v=interactive-1"></script>
+  <script src="globe.js?v=interactive-1"></script>
 </body>
 </html>

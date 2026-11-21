@@ -68,8 +68,9 @@
     const ways = [...form.querySelectorAll('input[name="contribute"]:checked')].map(input => input.value);
     const lines = [`Name: ${value('name')}`, `Email: ${value('email')}`];
     if (value('link')) lines.push(`LinkedIn or website: ${value('link')}`);
-    lines.push(`Closest city: ${city}`, '', 'What I am working on:', value('work'), '',
-      `How I would like to contribute: ${ways.length ? ways.join(', ') : 'Open to discussing'}`);
+    lines.push(`Closest city: ${city}`, '', 'What I am working on:', value('work'));
+    if (value('question')) lines.push('', `A question I would bring: ${value('question')}`);
+    lines.push('', `How I would like to contribute: ${ways.length ? ways.join(', ') : 'Open to discussing'}`);
     if (value('note')) lines.push('', value('note'));
     return lines.join('\n');
   }
@@ -145,10 +146,16 @@
     }
   });
 
-  document.querySelectorAll('[data-apply]').forEach(button => button.addEventListener('click', () => {
-    applicationOpener = button;
+  // Other parts of the page, such as the question deck, open the enquiry through this.
+  function openEnquiry(opener, prefill = {}) {
+    if (dialog.open) return;
+    if (finished) resetEnquiry();
+    applicationOpener = opener || null;
+    if (prefill.question) field('question').value = prefill.question;
     dialog.showModal();
-  }));
+  }
+  window.openPetersonEnquiry = openEnquiry;
+  document.querySelectorAll('[data-apply]').forEach(button => button.addEventListener('click', () => openEnquiry(button)));
   document.querySelectorAll('.close-dialog').forEach(button => button.addEventListener('click', () => dialog.close()));
   dialog.addEventListener('close', () => {
     if (finished) resetEnquiry();
