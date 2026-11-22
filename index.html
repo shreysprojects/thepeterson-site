@@ -9,7 +9,7 @@
   <link rel="canonical" href="https://thepeterson.org/">
   <link rel="icon" type="image/png" href="assets/peterson-logo.png">
   <link rel="stylesheet" href="assets/fonts.css">
-  <link rel="stylesheet" href="site.css?v=simple-2">
+  <link rel="stylesheet" href="site.css?v=six-1">
 </head>
 <body>
   <a class="skip-link" href="#community">Skip to the community</a>
@@ -26,26 +26,33 @@
   </header>
   <main>
     <section class="hero" id="journey" aria-label="The Peterson community">
-      <p class="eyebrow">The Peterson Community</p>
-      <h1>For those building<br>what comes next.</h1>
-      <p class="hero-invitation">Exceptional minds with a shared ambition:<br>A lasting contribution to the world.</p>
-      <div class="hero-action"><button class="button light" type="button" data-apply>Apply for membership</button></div>
-      <div class="globe-stage">
-        <canvas id="globe" tabindex="0" role="img" aria-label="A globe drawn in binary digits, with Peterson member cities Montréal, London and Shanghai. Drag it, or use the arrow keys, to spin it."></canvas>
+      <div class="hero-copy">
+        <p class="eyebrow">The Peterson Community</p>
+        <h1>For those building<br>what comes next.</h1>
+        <p class="hero-invitation">Exceptional minds with a shared ambition:<br>A lasting contribution to the world.</p>
+        <div class="hero-action"><button class="button light" type="button" data-apply>Apply for membership</button></div>
       </div>
-      <div class="globe-panel">
-        <div class="place-tabs" role="tablist" aria-label="Choose a city">
-          <button type="button" role="tab" id="tab-montreal" data-city="montreal" aria-controls="placeCard" aria-selected="true">Montréal</button>
-          <button type="button" role="tab" id="tab-london" data-city="london" aria-controls="placeCard" aria-selected="false" tabindex="-1">London</button>
-          <button type="button" role="tab" id="tab-shanghai" data-city="shanghai" aria-controls="placeCard" aria-selected="false" tabindex="-1">Shanghai</button>
-          <button type="button" role="tab" id="tab-you" data-city="you" aria-controls="placeCard" aria-selected="false" tabindex="-1">You</button>
+      <div class="hero-globe">
+        <div class="globe-stage">
+          <canvas id="globe" tabindex="0" role="img" aria-label="A globe drawn in binary digits, with Peterson member cities Montréal, New York, London, Shanghai, Hong Kong and Singapore. Drag it, or use the arrow keys, to spin it."></canvas>
         </div>
-        <div class="place-readout" id="placeCard" role="tabpanel" aria-labelledby="tab-montreal">
-          <p class="place-name" id="placeName">Montréal</p>
-          <p class="place-line" id="placeLine"></p>
-          <p class="place-note" id="placeNote"></p>
+        <div class="globe-panel">
+          <div class="place-tabs" role="tablist" aria-label="Choose a city">
+            <button type="button" role="tab" id="tab-montreal" data-city="montreal" aria-controls="placeCard" aria-selected="true">Montréal</button>
+            <button type="button" role="tab" id="tab-newyork" data-city="newyork" aria-controls="placeCard" aria-selected="false" tabindex="-1">New York</button>
+            <button type="button" role="tab" id="tab-london" data-city="london" aria-controls="placeCard" aria-selected="false" tabindex="-1">London</button>
+            <button type="button" role="tab" id="tab-shanghai" data-city="shanghai" aria-controls="placeCard" aria-selected="false" tabindex="-1">Shanghai</button>
+            <button type="button" role="tab" id="tab-hongkong" data-city="hongkong" aria-controls="placeCard" aria-selected="false" tabindex="-1">Hong Kong</button>
+            <button type="button" role="tab" id="tab-singapore" data-city="singapore" aria-controls="placeCard" aria-selected="false" tabindex="-1">Singapore</button>
+            <button type="button" role="tab" id="tab-you" data-city="you" aria-controls="placeCard" aria-selected="false" tabindex="-1">You</button>
+          </div>
+          <div class="place-readout" id="placeCard" role="tabpanel" aria-labelledby="tab-montreal">
+            <p class="place-name" id="placeName">Montréal</p>
+            <p class="place-line" id="placeLine"></p>
+            <p class="place-note" id="placeNote"></p>
+          </div>
+          <p class="globe-hint">Drag the globe to turn it. <button id="pauseMotion" class="globe-motion-button" type="button" aria-controls="globe">Pause</button></p>
         </div>
-        <p class="globe-hint">Drag the globe to turn it. <button id="pauseMotion" class="globe-motion-button" type="button" aria-controls="globe">Pause</button></p>
       </div>
     </section>
 
@@ -58,14 +65,14 @@
         <article class="pillar">
           <p class="eyebrow">01 / Community</p>
           <h3>A world of possibility.</h3>
-          <p class="pillar-body">Members in Montréal, London and Shanghai, united by a shared ambition to build what comes next.</p>
-          <p class="eyebrow metric">3 cities · 3 countries</p>
+          <p class="pillar-body">Members in Montréal, New York, London, Shanghai, Hong Kong and Singapore, united by a shared ambition to build what comes next.</p>
+          <p class="eyebrow metric">6 cities · 3 continents</p>
         </article>
         <article class="pillar">
           <p class="eyebrow">02 / Global reach</p>
-          <h3>Members across 3 countries.</h3>
+          <h3>Members across 3 continents.</h3>
           <p class="pillar-body">Across disciplines and borders, a shared standard of ability, judgment and contribution.</p>
-          <p class="eyebrow metric">Montréal · London · Shanghai</p>
+          <p class="eyebrow metric">North America · Europe · Asia</p>
         </article>
         <article class="pillar">
           <p class="eyebrow">03 / Connection</p>
@@ -82,15 +89,26 @@
       <p class="section-intro">Private gatherings are where ideas meet experience, assumptions are challenged, and relationships begin.</p>
       <div class="format">
         <p class="eyebrow">The format</p>
-        <div class="format-steps" role="group" aria-label="Show each part of a gathering at the table">
-          <button type="button" data-format="expert" aria-pressed="false">Expert perspectives</button>
-          <button type="button" data-format="talk" aria-pressed="false">Open conversation</button>
-          <button type="button" data-format="kept" aria-pressed="false">Lasting connections</button>
-        </div>
-        <figure class="gathering-table" id="gatheringTable">
-          <svg viewBox="0 0 640 420" role="group" aria-label="An illustrative dinner table of ten guests, one from each discipline"></svg>
-          <figcaption aria-live="polite">An illustrative table of ten, one guest from each discipline.</figcaption>
-        </figure>
+        <ol class="format-steps">
+          <li class="format-step">
+            <svg class="format-figure" viewBox="0 0 160 160" aria-hidden="true" focusable="false"><path class="lines spokes" d="M80 24L80 50M112.9 34.7L97.6 55.7M133.3 62.7L108.5 70.7M133.3 97.3L108.5 89.3M112.9 125.3L97.6 104.3M80 136L80 110M47.1 125.3L62.4 104.3M26.7 97.3L51.5 89.3M26.7 62.7L51.5 70.7M47.1 34.7L62.4 55.7"/><g class="seats"><circle cx="80" cy="24" r="2.6"/><circle cx="112.9" cy="34.7" r="2.6"/><circle cx="133.3" cy="62.7" r="2.6"/><circle cx="133.3" cy="97.3" r="2.6"/><circle cx="112.9" cy="125.3" r="2.6"/><circle cx="80" cy="136" r="2.6"/><circle cx="47.1" cy="125.3" r="2.6"/><circle cx="26.7" cy="97.3" r="2.6"/><circle cx="26.7" cy="62.7" r="2.6"/><circle cx="47.1" cy="34.7" r="2.6"/></g></svg>
+            <p class="format-number">01</p>
+            <h3>Expert perspectives</h3>
+            <p class="format-copy">Every guest brings the depth of their own field to a shared question.</p>
+          </li>
+          <li class="format-step">
+            <svg class="format-figure" viewBox="0 0 160 160" aria-hidden="true" focusable="false"><path class="lines" d="M80 24L133.3 97.3M112.9 34.7L112.9 125.3M133.3 62.7L80 136M133.3 97.3L47.1 125.3M112.9 125.3L26.7 97.3M80 136L26.7 62.7M47.1 125.3L47.1 34.7M26.7 97.3L80 24M26.7 62.7L112.9 34.7M47.1 34.7L133.3 62.7"/><g class="seats"><circle cx="80" cy="24" r="2.6"/><circle cx="112.9" cy="34.7" r="2.6"/><circle cx="133.3" cy="62.7" r="2.6"/><circle cx="133.3" cy="97.3" r="2.6"/><circle cx="112.9" cy="125.3" r="2.6"/><circle cx="80" cy="136" r="2.6"/><circle cx="47.1" cy="125.3" r="2.6"/><circle cx="26.7" cy="97.3" r="2.6"/><circle cx="26.7" cy="62.7" r="2.6"/><circle cx="47.1" cy="34.7" r="2.6"/></g></svg>
+            <p class="format-number">02</p>
+            <h3>Open conversation</h3>
+            <p class="format-copy">One conversation around one table. No stage, no panel, no audience.</p>
+          </li>
+          <li class="format-step">
+            <svg class="format-figure" viewBox="0 0 160 160" aria-hidden="true" focusable="false"><path class="lines web" d="M80 24L112.9 34.7M80 24L133.3 62.7M80 24L133.3 97.3M80 24L112.9 125.3M80 24L80 136M80 24L47.1 125.3M80 24L26.7 97.3M80 24L26.7 62.7M80 24L47.1 34.7M112.9 34.7L133.3 62.7M112.9 34.7L133.3 97.3M112.9 34.7L112.9 125.3M112.9 34.7L80 136M112.9 34.7L47.1 125.3M112.9 34.7L26.7 97.3M112.9 34.7L26.7 62.7M112.9 34.7L47.1 34.7M133.3 62.7L133.3 97.3M133.3 62.7L112.9 125.3M133.3 62.7L80 136M133.3 62.7L47.1 125.3M133.3 62.7L26.7 97.3M133.3 62.7L26.7 62.7M133.3 62.7L47.1 34.7M133.3 97.3L112.9 125.3M133.3 97.3L80 136M133.3 97.3L47.1 125.3M133.3 97.3L26.7 97.3M133.3 97.3L26.7 62.7M133.3 97.3L47.1 34.7M112.9 125.3L80 136M112.9 125.3L47.1 125.3M112.9 125.3L26.7 97.3M112.9 125.3L26.7 62.7M112.9 125.3L47.1 34.7M80 136L47.1 125.3M80 136L26.7 97.3M80 136L26.7 62.7M80 136L47.1 34.7M47.1 125.3L26.7 97.3M47.1 125.3L26.7 62.7M47.1 125.3L47.1 34.7M26.7 97.3L26.7 62.7M26.7 97.3L47.1 34.7M26.7 62.7L47.1 34.7"/><g class="seats"><circle cx="80" cy="24" r="2.6"/><circle cx="112.9" cy="34.7" r="2.6"/><circle cx="133.3" cy="62.7" r="2.6"/><circle cx="133.3" cy="97.3" r="2.6"/><circle cx="112.9" cy="125.3" r="2.6"/><circle cx="80" cy="136" r="2.6"/><circle cx="47.1" cy="125.3" r="2.6"/><circle cx="26.7" cy="97.3" r="2.6"/><circle cx="26.7" cy="62.7" r="2.6"/><circle cx="47.1" cy="34.7" r="2.6"/></g></svg>
+            <p class="format-number">03</p>
+            <h3>Lasting connections</h3>
+            <p class="format-copy">The relationships begun at the table carry on long after the evening.</p>
+          </li>
+        </ol>
       </div>
       <div class="letters-block">
         <p class="gathering-status">Our first gatherings are being developed.</p>
@@ -157,7 +175,7 @@
   <footer class="site-footer">
     <p class="footer-name">The Peterson Community</p>
     <p class="footer-tagline">A private community. An enduring ambition.</p>
-    <p class="footer-clocks"><span class="clock">Montréal <time data-tz="America/Toronto">--:--</time></span> <span class="sep" aria-hidden="true">·</span> <span class="clock">London <time data-tz="Europe/London">--:--</time></span> <span class="sep" aria-hidden="true">·</span> <span class="clock">Shanghai <time data-tz="Asia/Shanghai">--:--</time></span></p>
+    <p class="footer-clocks"><span class="clock">Montréal <time data-tz="America/Toronto">--:--</time></span> <span class="sep" aria-hidden="true">·</span> <span class="clock">New York <time data-tz="America/New_York">--:--</time></span> <span class="sep" aria-hidden="true">·</span> <span class="clock">London <time data-tz="Europe/London">--:--</time></span> <span class="sep" aria-hidden="true">·</span> <span class="clock">Shanghai <time data-tz="Asia/Shanghai">--:--</time></span> <span class="sep" aria-hidden="true">·</span> <span class="clock">Hong Kong <time data-tz="Asia/Hong_Kong">--:--</time></span> <span class="sep" aria-hidden="true">·</span> <span class="clock">Singapore <time data-tz="Asia/Singapore">--:--</time></span></p>
   </footer>
 
   <dialog id="applicationDialog" aria-labelledby="applicationTitle">
@@ -190,8 +208,11 @@
         <fieldset class="choices">
           <legend>Closest city</legend>
           <label class="choice"><input type="radio" name="city" value="Montréal"><span>Montréal</span></label>
+          <label class="choice"><input type="radio" name="city" value="New York"><span>New York</span></label>
           <label class="choice"><input type="radio" name="city" value="London"><span>London</span></label>
           <label class="choice"><input type="radio" name="city" value="Shanghai"><span>Shanghai</span></label>
+          <label class="choice"><input type="radio" name="city" value="Hong Kong"><span>Hong Kong</span></label>
+          <label class="choice"><input type="radio" name="city" value="Singapore"><span>Singapore</span></label>
           <label class="choice"><input type="radio" name="city" value="Elsewhere"><span>Elsewhere</span></label>
         </fieldset>
       </fieldset>
@@ -241,8 +262,8 @@
     </form>
     <p class="dialog-note">Membership conversations take place privately. You can also write to <a href="mailto:info@thepeterson.org?subject=Membership%20enquiry">info@thepeterson.org</a>.</p>
   </dialog>
-  <script src="page.js?v=simple-2"></script>
-  <script src="features.js?v=simple-2"></script>
-  <script src="globe.js?v=simple-2"></script>
+  <script src="page.js?v=six-1"></script>
+  <script src="features.js?v=six-1"></script>
+  <script src="globe.js?v=six-1"></script>
 </body>
 </html>

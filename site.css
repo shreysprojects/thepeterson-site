@@ -61,7 +61,8 @@ h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;letter-s
 .masthead-action{display:flex;justify-content:flex-end}
 .masthead-action .text-button{color:var(--navy)}
 
-/* Hero: the line, the invitation, the globe and one line about the chosen city */
+/* Hero: the line, the invitation, the globe and one line about the chosen city. On phones and
+   tablets they stack; on laptops and wider they sit side by side (see the end of this file). */
 .hero{padding:clamp(44px,5vw,76px) var(--gutter) clamp(64px,6.5vw,100px);background:var(--navy);text-align:center}
 .hero .eyebrow{color:var(--soft)}
 .hero h1{margin:18px auto 0;font-size:clamp(42px,6vw,88px);line-height:1.02}
@@ -72,10 +73,11 @@ h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;letter-s
 .globe-stage canvas.is-dragging{cursor:grabbing}
 .globe-stage canvas:focus-visible{outline-offset:-6px}
 .globe-panel{max-width:860px;margin:10px auto 0}
-.place-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
-.place-tabs button{min-height:44px;padding:0 16px;border:0;border-radius:999px;background:none;box-shadow:inset 0 0 0 1px var(--rule);color:var(--ivory);font-size:12.5px;font-weight:500;line-height:16px}
-.place-tabs button:hover{box-shadow:inset 0 0 0 1px var(--muted)}
-.place-tabs button[aria-selected="true"]{background:var(--ivory);color:var(--navy);box-shadow:none}
+/* The city names wrap as balanced lines rather than leaving one name alone on a row. */
+.place-tabs{text-align:center;text-wrap:balance}
+.place-tabs button{display:inline-block;vertical-align:middle;min-height:40px;padding:0 6px;border:0;background:none;color:var(--muted);font-size:12.5px;font-weight:500;line-height:16px;text-decoration-thickness:1px;text-underline-offset:6px;transition:color .15s}
+.place-tabs button:hover{color:var(--ivory)}
+.place-tabs button[aria-selected="true"]{color:var(--white);text-decoration-line:underline}
 .place-readout{margin-top:24px}
 .place-name{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(32px,2.8vw,40px);line-height:1.1}
 .place-line{min-height:22px;margin-top:8px;color:var(--body);font-size:14px;line-height:22px;font-variant-numeric:tabular-nums}
@@ -105,34 +107,19 @@ h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;letter-s
 /* Gatherings: the format, the table, Letters */
 .gatherings{background:var(--navy)}
 .gatherings .section-intro{color:var(--body)}
-.format{max-width:860px;margin:clamp(44px,4.5vw,64px) auto 0}
-.format-steps{margin-top:14px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 clamp(8px,1.6vw,24px)}
-.format-steps button{min-height:56px;padding:8px 4px;border:0;background:none;color:var(--muted);font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(19px,1.75vw,25px);line-height:1.15;text-align:center;text-decoration-thickness:1px;text-underline-offset:7px;transition:color .2s}
-.format-steps button:hover{color:var(--ivory)}
-.format-steps button[aria-pressed="true"]{color:var(--ivory);text-decoration-line:underline}
-.gathering-table{margin:clamp(16px,2vw,28px) 0 0}
-.gathering-table:not(.is-ready){display:none}
-.gathering-table svg{display:block;width:100%;max-width:640px;height:auto;margin:0 auto;overflow:visible}
-.gathering-table figcaption{max-width:470px;min-height:40px;margin:10px auto 0;color:var(--body);font-size:13px;line-height:20px}
-.gathering-table figcaption b{color:var(--ivory);font-weight:500}
-/* Lines and rings stay 1px on screen however small the drawing is. */
-.gt-table,.gt-ring,.gt-line{vector-effect:non-scaling-stroke}
-.gt-table{fill:var(--navy-2);stroke:var(--rule);stroke-width:1}
-.gt-table-label{fill:var(--muted);stroke:var(--navy-2);stroke-width:8px;stroke-linejoin:round;paint-order:stroke;font-family:'Cormorant Garamond',Georgia,serif;font-size:22px}
-.gt-seat{cursor:pointer;outline:none}
-.gt-ring{fill:var(--navy);stroke:var(--muted);stroke-width:1;transition:fill .2s,stroke .2s}
-.gt-dot{fill:var(--muted)}
-.gt-seat:hover .gt-ring,.gt-seat.is-hot .gt-ring{stroke:var(--ivory)}
-.gt-seat.is-speaker .gt-ring{fill:var(--ivory);stroke:var(--ivory)}
-.gt-seat.is-speaker .gt-dot{fill:var(--navy)}
-.gt-seat:focus-visible .gt-ring{stroke:#b8cde7;stroke-width:3}
-.gt-label{fill:var(--body);font-family:'IBM Plex Sans',Arial,sans-serif;font-size:var(--gt-label,12.5px);font-weight:500}
-.gt-seat:hover .gt-label,.gt-seat.is-hot .gt-label,.gt-seat.is-speaker .gt-label{fill:var(--ivory)}
-.gt-line{fill:none;stroke:var(--ivory);stroke-width:1;stroke-linecap:round}
-.gt-line.expert{stroke-opacity:.45}
-.gt-line.talk{stroke-opacity:.55}
-.gt-line.kept{stroke-opacity:.6}
-.letters-block{max-width:640px;margin:clamp(48px,5vw,72px) auto 0;padding-top:clamp(36px,3.6vw,48px);border-top:1px solid var(--rule)}
+/* The format: three equal steps. Each diagram is ten identical seats, with no head of table. */
+.format{max-width:1080px;margin:clamp(44px,4.5vw,64px) auto 0}
+.format-steps{margin:clamp(22px,2.4vw,32px) 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.format-step{padding:clamp(30px,3.2vw,48px) clamp(16px,2.4vw,36px)}
+.format-step+.format-step{border-left:1px solid var(--rule)}
+.format-figure{display:block;width:clamp(112px,10vw,140px);height:auto;margin:0 auto;overflow:visible}
+.format-figure .lines{fill:none;stroke:var(--ivory);stroke-width:1;stroke-opacity:.5;vector-effect:non-scaling-stroke}
+.format-figure .web{stroke-opacity:.26}
+.format-figure .seats{fill:var(--ivory)}
+.format-number{margin-top:28px;color:var(--muted);font-size:10.5px;font-weight:500;line-height:14px;letter-spacing:1.8px;font-variant-numeric:tabular-nums}
+.format-step h3{margin-top:10px;font-size:clamp(24px,2vw,30px);line-height:1.15}
+.format-copy{margin:10px auto 0;max-width:19em;color:var(--body);font-size:14px;line-height:1.6;text-wrap:balance}
+.letters-block{max-width:640px;margin:clamp(48px,5vw,72px) auto 0}
 .gathering-status{color:var(--body);font-size:13px;line-height:20px}
 .letters-title{display:block;margin-top:14px;font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(28px,2.4vw,34px);line-height:1.15}
 .letters-copy{margin-top:6px;color:var(--body);font-size:13px;line-height:20px}
@@ -178,7 +165,7 @@ h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;letter-s
 .site-footer{padding:clamp(48px,4.5vw,64px) var(--gutter);background:var(--navy);text-align:center}
 .footer-name{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(26px,2vw,30px);line-height:1.1}
 .footer-tagline{margin-top:8px;color:var(--muted);font-size:12px;line-height:18px}
-.footer-clocks{margin-top:20px;color:var(--muted);font-size:12px;line-height:20px;font-variant-numeric:tabular-nums}
+.footer-clocks{max-width:720px;margin:20px auto 0;color:var(--muted);font-size:12px;line-height:24px;font-variant-numeric:tabular-nums}
 .footer-clocks .clock{white-space:nowrap}
 .footer-clocks time{color:var(--ivory)}
 .footer-clocks .sep{margin:0 6px}
@@ -226,6 +213,22 @@ dialog p{font-size:16px;line-height:25px}
 .copy-fallback textarea{min-height:150px;font-size:13px}
 .copy-fallback .text-button{justify-self:start}
 
+/* Laptops and wider: the line on the left, the whole globe on the right, both in the first
+   screen. The globe is sized to the window's height so it never falls below the fold. */
+@media (min-width:1024px){
+  /* The globe column is never narrower than the row of city names, so they stay on one line. */
+  .hero{--globe-size:clamp(340px,min(calc(100vh - var(--header-height) - 210px),46vw),600px);display:grid;grid-template-columns:minmax(0,1fr) max(var(--globe-size),470px);align-items:center;column-gap:clamp(40px,5vw,96px);min-height:calc(100vh - var(--header-height));padding:24px max(var(--gutter),calc((100% - 1280px) / 2));text-align:left}
+  .hero h1{margin-left:0;font-size:clamp(44px,4.6vw,80px)}
+  .hero-invitation{margin-left:0}
+  .hero-action{justify-content:flex-start}
+  .hero-globe{text-align:center}
+  .globe-stage{width:var(--globe-size);max-width:none;margin:0 auto}
+  .globe-panel{margin-top:2px}
+  .place-readout{margin-top:14px}
+  .place-name{font-size:30px}
+  .globe-hint{margin-top:12px}
+}
+
 /* Smaller screens */
 /* Below 1100px the centred header would crowd the menu: logo left, menu and Apply right. */
 @media (max-width:1100px){
@@ -242,6 +245,8 @@ dialog p{font-size:16px;line-height:25px}
   .masthead-inner{gap:16px}
   .logo{width:190px;height:30.4px}
   .masthead-action .text-button{max-width:84px;font-size:11.5px;line-height:15px;text-align:right;text-underline-offset:4px}
+  .format-steps{grid-template-columns:1fr}
+  .format-step+.format-step{border-left:0;border-top:1px solid var(--rule)}
   .deck-cards.is-single li{padding:22px 20px 24px;font-size:24px}
   .membership-steps{flex-direction:column}
   .membership-steps li+li::before{display:none}
@@ -254,7 +259,7 @@ dialog p{font-size:16px;line-height:25px}
 @media (max-width:370px){
   .logo{width:170px;height:27.2px}
   .masthead-action .text-button{font-size:10.5px}
-  .place-tabs button{padding:0 12px}
+  .place-tabs button{padding:0 5px}
 }
 
 @media (prefers-reduced-motion:reduce){

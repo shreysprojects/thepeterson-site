@@ -65,10 +65,14 @@
   const clock = timeZone => format(timeZone, { hour: '2-digit', minute: '2-digit', hour12: false });
   const weekday = timeZone => format(timeZone, { weekday: 'long' });
 
+  // `flip` puts a label on the other side of its point, so close neighbours never overlap.
   const cities = [
     { id: 'montreal', name: 'Montréal', lat: 45.5019, lon: -73.5674, tz: 'America/Toronto' },
+    { id: 'newyork', name: 'New York', lat: 40.7128, lon: -74.006, tz: 'America/New_York', flip: true },
     { id: 'london', name: 'London', lat: 51.5072, lon: -0.1276, tz: 'Europe/London' },
-    { id: 'shanghai', name: 'Shanghai', lat: 31.2304, lon: 121.4737, tz: 'Asia/Shanghai' }
+    { id: 'shanghai', name: 'Shanghai', lat: 31.2304, lon: 121.4737, tz: 'Asia/Shanghai' },
+    { id: 'hongkong', name: 'Hong Kong', lat: 22.3193, lon: 114.1694, tz: 'Asia/Hong_Kong', flip: true },
+    { id: 'singapore', name: 'Singapore', lat: 1.3521, lon: 103.8198, tz: 'Asia/Singapore' }
   ];
   // Reference coordinates for common device time zones, used only to place the "You" marker.
   const zones = {
@@ -124,7 +128,8 @@
     }
     return points;
   }
-  const routes = [arcPoints(placeById('montreal'), placeById('london')), arcPoints(placeById('london'), placeById('shanghai'))];
+  const routes = [['montreal', 'london'], ['newyork', 'london'], ['london', 'shanghai'], ['shanghai', 'hongkong'], ['hongkong', 'singapore']]
+    .map(([a, b]) => arcPoints(placeById(a), placeById(b)));
   const visitorRoute = visitorIsHome ? null : arcPoints(visitor, nearest.city);
 
   let size = 0, radius = 0, dpr = 1, cellSize = 8, spriteSize = 12;
@@ -154,7 +159,7 @@
         if (r2 >= 1) continue;
         const zz = Math.sqrt(1 - r2);
         x.push(centre + i * cellSize); y.push(centre + j * cellSize);
-        u.push(uu); v.push(vv); z.push(zz); limb.push(.3 + .7 * zz);
+        u.push(uu); v.push(vv); z.push(zz); limb.push(.4 + .6 * zz);
       }
     }
     cells = {
@@ -162,7 +167,8 @@
       u: Float32Array.from(u), v: Float32Array.from(v), z: Float32Array.from(z), limb: Float32Array.from(limb)
     };
 
-    // The ocean dots, glow and rim never change, so draw them once per size.
+    // The ocean dots and soft glow never change, so draw them once per size. No outline:
+    // the globe's edge is simply where the dots end.
     oceanLayer = document.createElement('canvas');
     oceanLayer.width = canvas.width;
     oceanLayer.height = canvas.height;
@@ -173,7 +179,6 @@
     glow.addColorStop(1, rgba(palette.ivory, 0));
     o.fillStyle = glow;
     o.beginPath(); o.arc(centre, centre, radius, 0, Math.PI * 2); o.fill();
-    o.strokeStyle = rgba(palette.ivory, .12); o.lineWidth = 1; o.stroke();
     o.fillStyle = palette.muted;
     for (let k = 0; k < cells.count; k++) {
       o.globalAlpha = cells.limb[k] * .13;
@@ -181,7 +186,7 @@
     }
     o.globalAlpha = 1;
 
-    // Pre-render each digit once in ivory: drawing sprites is far cheaper than text.
+    // Pre-render each digit once in white: drawing sprites is far cheaper than text.
     spriteSize = Math.ceil(cellSize * 1.6);
     const font = `500 ${(cellSize * 1.1).toFixed(1)}px "IBM Plex Sans", Arial, sans-serif`;
     const sprite = (digit, color) => {
@@ -193,7 +198,7 @@
       g.fillText(digit, spriteSize / 2, spriteSize / 2);
       return s;
     };
-    sprites = [sprite('0', palette.ivory), sprite('1', palette.ivory)];
+    sprites = [sprite('0', '#ffffff'), sprite('1', '#ffffff')];
     return true;
   }
 
@@ -228,7 +233,7 @@
       // Night is simply quieter: the same digits, dimmer.
       const lit = clamp((wx * sx + wy * sy + wz * sz + .08) / .16, 0, 1);
       const key = Math.floor((lat + 90) / 1.5) * 240 + Math.floor((lon + 180) / 1.5);
-      ctx.globalAlpha = limb[k] * (.3 + .62 * lit);
+      ctx.globalAlpha = limb[k] * (.55 + .45 * lit);
       ctx.drawImage(sprites[phraseBits[key % phraseBits.length]], x[k] - half, y[k] - half, spriteSize, spriteSize);
     }
     ctx.globalAlpha = 1;
@@ -294,7 +299,7 @@
         ctx.strokeStyle = palette.ivory; ctx.lineWidth = 1;
         ctx.beginPath(); ctx.arc(q[0], q[1], 7.5, 0, Math.PI * 2); ctx.stroke();
       }
-      label(city.name, q[0], q[1], alpha * (chosen ? 1 : .7));
+      label(city.name, q[0], q[1], alpha * (chosen ? 1 : .7), city.flip);
       marks.push({ id: city.id, x: q[0], y: q[1] });
     });
     // You: shown only when its tab is chosen, labelled on the far side from nearby cities.
@@ -305,7 +310,7 @@
         ctx.globalAlpha = alpha * .85;
         ctx.strokeStyle = palette.ivory; ctx.lineWidth = 1;
         ctx.beginPath(); ctx.arc(q[0], q[1], 4, 0, Math.PI * 2); ctx.stroke();
-        label('You', q[0], q[1], alpha, true);
+        label('You', q[0], q[1], alpha, !nearest.city.flip);
         marks.push({ id: 'you', x: q[0], y: q[1] });
       }
     }

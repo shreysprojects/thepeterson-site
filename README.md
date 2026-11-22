@@ -4,10 +4,12 @@ The static site for thepeterson.org, published with GitHub Pages from the `main`
 
 ## What's on the page
 
-The homepage uses the Meridian layout, kept simple: one centre line, with the logo centred in the header, the globe at the heart of the hero, and every section centred beneath it. The palette is navy, ivory and white only. Styles live in `site.css`.
+The homepage uses the Meridian layout, kept simple: the logo centred in the header and every section centred beneath it. On laptops and wider, the hero puts the headline on the left and the whole globe on the right, sized to the window's height so it is in view on arrival; on phones and tablets they stack. The palette is navy, ivory and white only. Styles live in `site.css`.
 
-- `globe.js`: the binary globe in the hero, drawn in ivory on navy. Drag it or use the arrow keys to turn it, and choose a city on the globe or with the tabs below it to fly there; one line beneath shows its local time, whether it is day or night there, and its distance from the visitor. The night side is simply dimmer, from the sun's real position. A "You" tab places the visitor from their device time zone; nothing is looked up or sent. The digits spell "what comes next" in ASCII. Land outlines (Natural Earth) are embedded in the script, and drawing stops whenever the globe is off-screen.
-- `features.js`: the question deck (one card at a time), the seat-at-the-table drawing of the gathering format, and the city clocks in the footer. Nothing in it moves on its own.
+- `globe.js`: the binary globe in the hero, white digits on navy with no outline. It turns all the time, stops while it is held, and carries on when let go. Choose one of the six member cities (Montréal, New York, London, Shanghai, Hong Kong, Singapore) on the globe or with the names below it to fly there; one line beneath shows its local time, whether it is day or night there, and its distance from the visitor. The night side is simply dimmer, from the sun's real position. A "You" tab places the visitor from their device time zone; nothing is looked up or sent. The digits spell "what comes next" in ASCII. Land outlines (Natural Earth) are embedded in the script, and drawing stops whenever the globe is off-screen. To add a city, add it to `cities` (and `routes`, if it should be linked) in `globe.js`, then add a matching tab in `index.html`.
+- `features.js`: the question deck (one card at a time) and the city clocks in the footer. Nothing in it moves on its own.
+
+The gathering format is three equal steps in plain HTML (`.format-steps` in `index.html`), each with a small diagram of ten identical seats.
 - `page.js`: the three-step membership enquiry and the Letters sign-up.
 
 The twelve questions in the deck live as a plain list in `index.html` (`#questionDeck`). Edit them there.
