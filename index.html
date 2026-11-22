@@ -9,7 +9,7 @@
   <link rel="canonical" href="https://thepeterson.org/">
   <link rel="icon" type="image/png" href="assets/peterson-logo.png">
   <link rel="stylesheet" href="assets/fonts.css">
-  <link rel="stylesheet" href="site.css?v=meridian-2">
+  <link rel="stylesheet" href="site.css?v=simple-1">
 </head>
 <body>
   <a class="skip-link" href="#community">Skip to the community</a>
@@ -29,7 +29,7 @@
       <p class="eyebrow">The Peterson Community</p>
       <h1>For those building<br>what comes next.</h1>
       <p class="hero-invitation">Exceptional minds with a shared ambition:<br>A lasting contribution to the world.</p>
-      <div class="hero-action"><button class="button brass" type="button" data-apply>Apply for membership</button></div>
+      <div class="hero-action"><button class="button light" type="button" data-apply>Apply for membership</button></div>
       <div class="globe-stage">
         <canvas id="globe" tabindex="0" role="img" aria-label="A globe drawn in binary digits, with Peterson member cities Montréal, London and Shanghai. Drag it, or use the arrow keys, to spin it."></canvas>
       </div>
@@ -40,28 +40,17 @@
           <button type="button" role="tab" id="tab-shanghai" data-city="shanghai" aria-controls="placeCard" aria-selected="false" tabindex="-1">Shanghai</button>
           <button type="button" role="tab" id="tab-you" data-city="you" aria-controls="placeCard" aria-selected="false" tabindex="-1">You</button>
         </div>
-        <div class="place-readout" id="placeCard" role="tabpanel" aria-labelledby="tab-montreal" aria-live="polite">
+        <div class="place-readout" id="placeCard" role="tabpanel" aria-labelledby="tab-montreal">
           <p class="place-name" id="placeName">Montréal</p>
-          <p class="place-coords" id="placeCoords">45.50° N · 73.57° W</p>
-          <dl class="place-facts">
-            <div><dt>Local time</dt><dd id="placeTime">--:--</dd></div>
-            <div><dt id="placeLabel2">Right now</dt><dd id="placeSun">–</dd></div>
-            <div><dt id="placeLabel3">From you</dt><dd id="placeDistance">–</dd></div>
-          </dl>
+          <p class="place-line" id="placeLine"></p>
           <p class="place-note" id="placeNote"></p>
         </div>
-        <div class="globe-legend">
-          <span><i class="key day" aria-hidden="true"></i>Daylight</span>
-          <span><i class="key night" aria-hidden="true"></i>After dark</span>
-          <span><i class="key route" aria-hidden="true"></i>Links between cities</span>
-          <button id="pauseMotion" class="globe-motion-button" type="button" aria-controls="globe" aria-pressed="false">Pause globe</button>
-          <span>Drag the globe to spin it.</span>
-        </div>
+        <p class="globe-hint">Drag the globe to turn it. <button id="pauseMotion" class="globe-motion-button" type="button" aria-controls="globe">Pause</button></p>
       </div>
     </section>
 
     <section class="section purpose" id="community">
-      <p class="eyebrow"><span class="coordinates" title="Montréal"><span class="sr-only">Montréal, </span>45.50° N · 73.57° W</span> / Our purpose</p>
+      <p class="eyebrow">Our purpose</p>
       <h2>A common ambition.<br>An uncommon company.</h2>
       <p class="lead">Peterson brings together exceptional people across disciplines to exchange ideas, contribute expertise, and pursue work of consequence.</p>
       <p class="section-copy">Our ambition is to become the institution behind the next generation of industry-defining companies: outstanding in financial success and lasting in their positive impact.</p>
@@ -88,7 +77,7 @@
     </section>
 
     <section class="section gatherings" id="gatherings">
-      <p class="eyebrow"><span class="coordinates" title="London"><span class="sr-only">London, </span>51.51° N · 0.13° W</span> / The conversation begins</p>
+      <p class="eyebrow">The conversation begins</p>
       <h2>The right people.<br>The important questions.</h2>
       <p class="section-intro">Private gatherings are where ideas meet experience, assumptions are challenged, and relationships begin.</p>
       <div class="format">
@@ -100,10 +89,8 @@
         </div>
         <figure class="gathering-table" id="gatheringTable">
           <svg viewBox="0 0 640 420" role="group" aria-label="An illustrative dinner table of ten guests, one from each discipline"></svg>
-          <div class="seat-chips" role="group" aria-label="Seats at the table"></div>
           <figcaption aria-live="polite">An illustrative table of ten, one guest from each discipline.</figcaption>
         </figure>
-        <p class="format-hint">Choose a part of the evening to see it at the table.</p>
       </div>
       <div class="letters-block">
         <p class="gathering-status">Our first gatherings are being developed.</p>
@@ -155,7 +142,7 @@
     </section>
 
     <section class="section membership" id="membership">
-      <p class="eyebrow"><span class="coordinates" title="Shanghai"><span class="sr-only">Shanghai, </span>31.23° N · 121.47° E</span> / Membership</p>
+      <p class="eyebrow">Membership</p>
       <h2>Ability. Judgment. Contribution.</h2>
       <ol class="membership-steps" aria-label="How a membership enquiry works">
         <li>1 · Introduce yourself</li>
@@ -170,12 +157,7 @@
   <footer class="site-footer">
     <p class="footer-name">The Peterson Community</p>
     <p class="footer-tagline">A private community. An enduring ambition.</p>
-    <div class="footer-clocks">
-      <div><p class="footer-city">Montréal</p><p class="footer-time"><span class="sr-only">Local time </span><time data-tz="America/Toronto">--:--</time></p></div>
-      <div><p class="footer-city">London</p><p class="footer-time"><span class="sr-only">Local time </span><time data-tz="Europe/London">--:--</time></p></div>
-      <div><p class="footer-city">Shanghai</p><p class="footer-time"><span class="sr-only">Local time </span><time data-tz="Asia/Shanghai">--:--</time></p></div>
-    </div>
-    <button class="footer-code" id="footerCode" type="button" aria-pressed="false"><span class="code-text"></span><span class="code-action">Decode</span></button>
+    <p class="footer-clocks"><span class="clock">Montréal <time data-tz="America/Toronto">--:--</time></span> <span class="sep" aria-hidden="true">·</span> <span class="clock">London <time data-tz="Europe/London">--:--</time></span> <span class="sep" aria-hidden="true">·</span> <span class="clock">Shanghai <time data-tz="Asia/Shanghai">--:--</time></span></p>
   </footer>
 
   <dialog id="applicationDialog" aria-labelledby="applicationTitle">
@@ -259,8 +241,8 @@
     </form>
     <p class="dialog-note">Membership conversations take place privately. You can also write to <a href="mailto:info@thepeterson.org?subject=Membership%20enquiry">info@thepeterson.org</a>.</p>
   </dialog>
-  <script src="page.js?v=meridian-2"></script>
-  <script src="features.js?v=meridian-2"></script>
-  <script src="globe.js?v=meridian-2"></script>
+  <script src="page.js?v=simple-1"></script>
+  <script src="features.js?v=simple-1"></script>
+  <script src="globe.js?v=simple-1"></script>
 </body>
 </html>

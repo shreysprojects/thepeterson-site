@@ -4,10 +4,10 @@ The static site for thepeterson.org, published with GitHub Pages from the `main`
 
 ## What's on the page
 
-The homepage uses the Meridian layout: one centre line, with the logo centred in the header, the globe at the heart of the hero, and every section centred beneath it. Styles live in `site.css`.
+The homepage uses the Meridian layout, kept simple: one centre line, with the logo centred in the header, the globe at the heart of the hero, and every section centred beneath it. The palette is navy, ivory and white only. Styles live in `site.css`.
 
-- `globe.js`: the binary globe in the hero. Drag it or use the arrow keys to spin it, and choose a city on the globe or with the tabs below it to fly there and see its local time, daylight and distance. Night is drawn in gold from the sun's real position. A "You" marker is placed from the visitor's device time zone; nothing is looked up or sent. The digits spell "what comes next" in ASCII. Land outlines (Natural Earth) are embedded in the script, and drawing stops whenever the globe is off-screen.
-- `features.js`: headlines that decode from binary on first view, the question deck, the seat-at-the-table view of the gathering format, live city clocks, and the footer phrase.
+- `globe.js`: the binary globe in the hero, drawn in ivory on navy. Drag it or use the arrow keys to turn it, and choose a city on the globe or with the tabs below it to fly there; one line beneath shows its local time, whether it is day or night there, and its distance from the visitor. The night side is simply dimmer, from the sun's real position. A "You" tab places the visitor from their device time zone; nothing is looked up or sent. The digits spell "what comes next" in ASCII. Land outlines (Natural Earth) are embedded in the script, and drawing stops whenever the globe is off-screen.
+- `features.js`: the question deck (one card at a time), the seat-at-the-table drawing of the gathering format, and the city clocks in the footer. Nothing in it moves on its own.
 - `page.js`: the three-step membership enquiry and the Letters sign-up.
 
 The twelve questions in the deck live as a plain list in `index.html` (`#questionDeck`). Edit them there.

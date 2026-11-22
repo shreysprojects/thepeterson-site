@@ -1,6 +1,6 @@
 /* Peterson globe: the world written in binary on a real orthographic projection.
    Drag it, or use the arrow keys, to spin it. Choose a city to fly there and see its local time,
-   daylight and distance. Night is drawn in gold from the sun's real position. The "You" marker
+   daylight and distance. The night side is dimmer, from the sun's real position. The "You" marker
    is placed from the visitor's device time zone; nothing is looked up or sent anywhere.
    Land digits spell "what comes next " in ASCII along each parallel. Land outlines come from
    Natural Earth (via world-atlas), packed below as run lengths of a 720 x 360 mask.
@@ -15,10 +15,7 @@
   const pauseButton = document.querySelector('#pauseMotion');
   const tabs = [...document.querySelectorAll('.place-tabs [role="tab"]')];
   const byId = id => document.getElementById(id);
-  const card = {
-    panel: byId('placeCard'), coords: byId('placeCoords'), name: byId('placeName'), time: byId('placeTime'),
-    label2: byId('placeLabel2'), sun: byId('placeSun'), label3: byId('placeLabel3'), distance: byId('placeDistance'), note: byId('placeNote')
-  };
+  const card = { panel: byId('placeCard'), name: byId('placeName'), line: byId('placeLine'), note: byId('placeNote') };
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   const DEG = Math.PI / 180;
   const FRAME = 1000 / 60;
@@ -57,7 +54,6 @@
     const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * DEG) * Math.cos(b.lat * DEG) * Math.sin(dLon / 2) ** 2;
     return 2 * 6371 * Math.asin(Math.min(1, Math.sqrt(h)));
   }
-  const formatCoordinates = place => `${Math.abs(place.lat).toFixed(2)}° ${place.lat >= 0 ? 'N' : 'S'} · ${Math.abs(place.lon).toFixed(2)}° ${place.lon >= 0 ? 'E' : 'W'}`;
   const formatKm = km => `${Math.round(km).toLocaleString('en-GB')} km`;
   function format(timeZone, options) {
     try {
@@ -110,7 +106,7 @@
   const palette = (() => {
     const css = getComputedStyle(document.documentElement);
     const read = (name, fallback) => css.getPropertyValue(name).trim() || fallback;
-    return { ivory: read('--globe', '#f8f7ef'), brass: read('--brass', '#c8a15a'), muted: read('--muted', '#a8b7ca'), navy: read('--navy', '#101d35'), night: '#d4983a' };
+    return { ivory: read('--globe', '#f8f7ef'), muted: read('--muted', '#a8b7ca'), navy: read('--navy', '#101d35') };
   })();
   function rgba(hex, alpha) {
     let h = String(hex).replace('#', '');
@@ -118,11 +114,6 @@
     const n = parseInt(h.slice(0, 6), 16);
     return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${alpha})`;
   }
-  const hash = i => {
-    i = Math.imul(i ^ (i >>> 16), 0x45d9f3b);
-    i = Math.imul(i ^ (i >>> 16), 0x45d9f3b);
-    return (i ^ (i >>> 16)) >>> 0;
-  };
   function arcPoints(a, b) {
     const A = vec(a.lat, a.lon), B = vec(b.lat, b.lon);
     const omega = Math.acos(clamp(dot(A, B), -1, 1)), sine = Math.sin(omega) || 1, lift = .03 + .08 * omega / Math.PI;
@@ -189,7 +180,7 @@
     }
     o.globalAlpha = 1;
 
-    // Pre-render each digit in day and night colours: drawing sprites is far cheaper than text.
+    // Pre-render each digit once in ivory: drawing sprites is far cheaper than text.
     spriteSize = Math.ceil(cellSize * 1.6);
     const font = `500 ${(cellSize * 1.1).toFixed(1)}px "IBM Plex Sans", Arial, sans-serif`;
     const sprite = (digit, color) => {
@@ -201,7 +192,7 @@
       g.fillText(digit, spriteSize / 2, spriteSize / 2);
       return s;
     };
-    sprites = { day: [sprite('0', palette.ivory), sprite('1', palette.ivory)], night: [sprite('0', palette.night), sprite('1', palette.night)] };
+    sprites = [sprite('0', palette.ivory), sprite('1', palette.ivory)];
     return true;
   }
 
@@ -214,8 +205,6 @@
     if (!cells) return;
     const { f, e, n } = basis();
     const centre = size / 2;
-    const live = !paused && !motion.matches;
-    const seed = live ? Math.floor(now / 320) : 0;
     const [sx, sy, sz] = sun;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, size, size);
@@ -235,13 +224,11 @@
       let row = Math.floor((90 - lat) / 180 * MH);
       if (row >= MH) row = MH - 1; else if (row < 0) row = 0;
       if (!land[row * MW + column]) continue;
+      // Night is simply quieter: the same digits, dimmer.
       const lit = clamp((wx * sx + wy * sy + wz * sz + .08) / .16, 0, 1);
       const key = Math.floor((lat + 90) / 1.5) * 240 + Math.floor((lon + 180) / 1.5);
-      let bit = phraseBits[key % phraseBits.length];
-      if (live && hash(key * 31 + seed * 7919) % 53 === 0) bit ^= 1;
-      const day = lit > .5;
-      ctx.globalAlpha = day ? limb[k] * (.45 + .5 * lit) : limb[k] * (.55 + .3 * (1 - lit));
-      ctx.drawImage((day ? sprites.day : sprites.night)[bit], x[k] - half, y[k] - half, spriteSize, spriteSize);
+      ctx.globalAlpha = limb[k] * (.3 + .62 * lit);
+      ctx.drawImage(sprites[phraseBits[key % phraseBits.length]], x[k] - half, y[k] - half, spriteSize, spriteSize);
     }
     ctx.globalAlpha = 1;
 
@@ -254,11 +241,10 @@
     const shown = q => clamp((q[2] + .02) / .22, 0, 1);
     ctx.lineCap = 'round';
 
-    // Routes: fine solid arcs that fade over the horizon. Now and then a soft light travels
-    // along each one, from the first city to the second.
-    const route = (points, color, alpha, glint) => {
+    // Routes: faint, fine and still.
+    const route = (points, alpha) => {
       const projected = points.map(project);
-      ctx.strokeStyle = color;
+      ctx.strokeStyle = palette.ivory;
       ctx.lineWidth = 1;
       for (let k = 1; k < projected.length; k++) {
         const visibility = Math.min(shown(projected[k - 1]), shown(projected[k]));
@@ -269,30 +255,9 @@
         ctx.lineTo(projected[k][0], projected[k][1]);
         ctx.stroke();
       }
-      if (glint < 0) return;
-      const head = glint * (projected.length - 1), trail = 10;
-      ctx.lineWidth = 1.6;
-      for (let k = Math.max(1, Math.floor(head - trail)); k <= Math.min(projected.length - 1, Math.floor(head)); k++) {
-        const visibility = Math.min(shown(projected[k - 1]), shown(projected[k]));
-        if (visibility <= 0) continue;
-        ctx.globalAlpha = .95 * visibility * clamp(1 - (head - k) / trail, 0, 1);
-        ctx.beginPath();
-        ctx.moveTo(projected[k - 1][0], projected[k - 1][1]);
-        ctx.lineTo(projected[k][0], projected[k][1]);
-        ctx.stroke();
-      }
     };
-    // Each light takes about 2.8 s to travel and then rests; the two routes take turns.
-    const glintAt = offset => {
-      if (!live) return -1;
-      const t = (now / 7000 + offset) % 1;
-      if (t >= .4) return -1;
-      const s = t / .4;
-      return s * (2 - s);
-    };
-    route(routes[0], palette.brass, .5, glintAt(0));
-    route(routes[1], palette.brass, .5, glintAt(.5));
-    if (visitorRoute && selected === 'you') route(visitorRoute, palette.ivory, .35, -1);
+    routes.forEach(points => route(points, .3));
+    if (visitorRoute && selected === 'you') route(visitorRoute, .25);
     ctx.globalAlpha = 1;
 
     marks = [];
@@ -302,7 +267,7 @@
     ctx.textAlign = 'left';
     ctx.lineJoin = 'round';
     // Labels sit on the map like printed type: small capitals with a navy halo, no boxes.
-    const label = (text, px, py, alpha, color, flip = false) => {
+    const label = (text, px, py, alpha, flip = false) => {
       const caps = text.toUpperCase();
       const width = ctx.measureText(caps).width;
       const onRight = (px < centre + radius * .45) !== flip;
@@ -311,41 +276,37 @@
       ctx.strokeStyle = palette.navy;
       ctx.lineWidth = 4;
       ctx.strokeText(caps, left, py);
-      ctx.fillStyle = color;
+      ctx.fillStyle = palette.ivory;
       ctx.fillText(caps, left, py);
     };
-    // Cities: a steady brass point with a soft glow. The chosen city gets a fine ring.
+    // Cities: a small solid point. The chosen city gets a fine ring.
     cities.forEach(city => {
       const q = project(vec(city.lat, city.lon));
       if (q[2] <= .02) return;
       const alpha = clamp(q[2] * 4, 0, 1);
       const chosen = city.id === selected;
-      const glow = ctx.createRadialGradient(q[0], q[1], 0, q[0], q[1], 12);
-      glow.addColorStop(0, rgba(palette.brass, .35));
-      glow.addColorStop(1, rgba(palette.brass, 0));
       ctx.globalAlpha = alpha;
-      ctx.fillStyle = glow;
-      ctx.beginPath(); ctx.arc(q[0], q[1], 12, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = palette.brass;
-      ctx.beginPath(); ctx.arc(q[0], q[1], chosen ? 3.8 : 3, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = palette.ivory;
+      ctx.beginPath(); ctx.arc(q[0], q[1], chosen ? 3.4 : 2.8, 0, Math.PI * 2); ctx.fill();
       if (chosen) {
-        ctx.globalAlpha = alpha * .8;
-        ctx.strokeStyle = palette.brass; ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.arc(q[0], q[1], 8, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha = alpha * .7;
+        ctx.strokeStyle = palette.ivory; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(q[0], q[1], 7.5, 0, Math.PI * 2); ctx.stroke();
       }
-      label(city.name, q[0], q[1], alpha * (chosen ? 1 : .85), chosen ? palette.brass : palette.ivory);
+      label(city.name, q[0], q[1], alpha * (chosen ? 1 : .7));
       marks.push({ id: city.id, x: q[0], y: q[1] });
     });
-    // You: a small open circle, labelled only when chosen.
-    const q = project(vec(visitor.lat, visitor.lon));
-    if (q[2] > .02) {
-      const alpha = clamp(q[2] * 4, 0, 1);
-      ctx.globalAlpha = alpha * .85;
-      ctx.strokeStyle = palette.ivory; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.arc(q[0], q[1], selected === 'you' ? 4.5 : 3.5, 0, Math.PI * 2); ctx.stroke();
-      // Opposite side to the city labels, so it never collides with a nearby city.
-      if (selected === 'you') label('You', q[0], q[1], alpha, palette.ivory, true);
-      marks.push({ id: 'you', x: q[0], y: q[1] });
+    // You: shown only when its tab is chosen, labelled on the far side from nearby cities.
+    if (selected === 'you') {
+      const q = project(vec(visitor.lat, visitor.lon));
+      if (q[2] > .02) {
+        const alpha = clamp(q[2] * 4, 0, 1);
+        ctx.globalAlpha = alpha * .85;
+        ctx.strokeStyle = palette.ivory; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(q[0], q[1], 4, 0, Math.PI * 2); ctx.stroke();
+        label('You', q[0], q[1], alpha, true);
+        marks.push({ id: 'you', x: q[0], y: q[1] });
+      }
     }
     if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
     ctx.globalAlpha = 1;
@@ -406,13 +367,7 @@
     kick();
   }
 
-  /* City panel */
-  function setTime(time, day) {
-    const small = document.createElement('small');
-    small.textContent = day;
-    card.time.replaceChildren(time, small);
-  }
-
+  /* City readout: one plain line */
   function renderCard() {
     tabs.forEach(tab => {
       const on = tab.dataset.city === selected;
@@ -422,27 +377,20 @@
     });
     const place = placeById(selected);
     if (place.id === 'you') {
-      card.coords.textContent = `${formatCoordinates(place)} · approx.`;
       card.name.textContent = 'You';
-      setTime(clock(), weekday());
-      card.label2.textContent = 'Nearest city';
-      card.sun.textContent = nearest.city.name;
-      card.label3.textContent = 'Distance';
-      card.distance.textContent = visitorIsHome ? 'You’re here' : formatKm(nearest.km);
+      card.line.textContent = visitorIsHome
+        ? `${weekday()} ${clock()} · In ${nearest.city.name}`
+        : `${weekday()} ${clock()} · ${formatKm(nearest.km)} from ${nearest.city.name}`;
       card.note.textContent = place.exact
-        ? `Placed at ${place.place}, the reference city for your device’s time zone. Nothing is looked up or sent.`
-        : `Placed from your device’s offset from UTC (${place.place}). Nothing is looked up or sent.`;
+        ? `Placed at ${place.place}, from your device’s time zone. Nothing is looked up or sent.`
+        : 'Placed from your device’s time zone. Nothing is looked up or sent.';
       return;
     }
     const height = dot(vec(place.lat, place.lon), sun);
     const km = distanceKm(visitor, place);
-    card.coords.textContent = formatCoordinates(place);
+    const light = height > .05 ? 'Daylight' : height > -.1 ? 'Twilight' : 'Night';
     card.name.textContent = place.name;
-    setTime(clock(place.tz), weekday(place.tz));
-    card.label2.textContent = 'Right now';
-    card.sun.textContent = height > .05 ? 'Daylight' : height > -.1 ? 'Twilight' : 'After dark';
-    card.label3.textContent = 'From you';
-    card.distance.textContent = km < 80 ? 'You’re here' : formatKm(km);
+    card.line.textContent = `${weekday(place.tz)} ${clock(place.tz)} · ${light} · ${km < 80 ? 'You’re here' : `${formatKm(km)} from you`}`;
     card.note.textContent = '';
   }
 
@@ -534,8 +482,8 @@
   function updatePauseButton() {
     if (!pauseButton) return;
     pauseButton.disabled = motion.matches;
-    pauseButton.setAttribute('aria-pressed', String(paused));
-    pauseButton.textContent = paused ? 'Resume globe' : 'Pause globe';
+    pauseButton.textContent = paused ? 'Resume' : 'Pause';
+    pauseButton.setAttribute('aria-label', paused ? 'Resume the globe' : 'Pause the globe');
   }
   if (pauseButton) pauseButton.addEventListener('click', () => {
     paused = !paused;
