@@ -130,7 +130,8 @@
   let size = 0, radius = 0, dpr = 1, cellSize = 8, spriteSize = 12;
   let cells = null, oceanLayer = null, sprites = null;
   let lon0 = -34, lat0 = 26, vLon = 0, vLat = 0;
-  let dragging = false, moved = 0, lastX = 0, lastY = 0, lastInteract = -Infinity, flight = null;
+  const SPIN = 4.5; // degrees per second
+  let dragging = false, moved = 0, lastX = 0, lastY = 0, flight = null, spin = SPIN;
   let paused = false, visible = true, selected = 'montreal', frame = 0, lastTime = 0;
   let sun = sunVector(), marks = [];
 
@@ -312,13 +313,18 @@
     ctx.globalAlpha = 1;
   }
 
-  /* Motion: spins on its own unless paused, dragged, flying to a city, or recently touched. */
+  /* Motion: the globe always turns. Holding it stops it; letting go hands it straight back to
+     the spin, with any flick carrying on and easing into it. Only Pause and the visitor's
+     reduced-motion setting keep it still. */
   function step(now) {
     frame = 0;
     const dt = lastTime ? Math.min(50, now - lastTime) : FRAME;
     lastTime = now;
     const scale = dt / FRAME;
     let moving = false;
+    // Drop the spin at once while held or flying; build it back up over about a second.
+    const free = !dragging && !flight && !paused && !motion.matches;
+    spin = free ? Math.min(SPIN, spin + SPIN * dt / 1000) : 0;
     if (flight) {
       const t = clamp((now - flight.start) / flight.duration, 0, 1);
       const k = t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -326,15 +332,18 @@
       lat0 = flight.lat + flight.dLat * k;
       moving = true;
       if (t >= 1) flight = null;
-    } else if (!dragging && (Math.abs(vLon) > .01 || Math.abs(vLat) > .01)) {
-      lon0 += vLon * scale;
-      lat0 = clamp(lat0 + vLat * scale, -65, 65);
-      const decay = Math.pow(.92, scale);
-      vLon *= decay; vLat *= decay;
-      moving = true;
-    } else if (!dragging && !paused && !motion.matches && now - lastInteract > 6000) {
-      lon0 -= 4.5 * dt / 1000;
-      moving = true;
+    } else if (!dragging) {
+      if (Math.abs(vLon) > .01 || Math.abs(vLat) > .01) {
+        lon0 += vLon * scale;
+        lat0 = clamp(lat0 + vLat * scale, -65, 65);
+        const decay = Math.pow(.92, scale);
+        vLon *= decay; vLat *= decay;
+        moving = true;
+      }
+      if (spin > 0) {
+        lon0 -= spin * dt / 1000;
+        moving = true;
+      }
     }
     lon0 = normalize(lon0);
     draw(now);
@@ -356,7 +365,6 @@
     const dLon = normalize(lon - lon0);
     const targetLat = clamp(lat * .7, -45, 50);
     vLon = vLat = 0;
-    lastInteract = performance.now();
     if (motion.matches) {
       lon0 = normalize(lon0 + dLon);
       lat0 = targetLat;
@@ -434,7 +442,6 @@
     lastY = event.clientY;
     vLon = vLat = 0;
     flight = null;
-    lastInteract = performance.now();
     canvas.classList.add('is-dragging');
     try { canvas.setPointerCapture(event.pointerId); } catch (error) { /* Pointer capture is optional. */ }
     kick();
@@ -449,13 +456,11 @@
     lat0 = clamp(lat0 + dy * k, -65, 65);
     vLon = -dx * k;
     vLat = dy * k;
-    lastInteract = performance.now();
   });
   const endDrag = (event, cancelled) => {
     if (!dragging) return;
     dragging = false;
     canvas.classList.remove('is-dragging');
-    lastInteract = performance.now();
     if (cancelled || motion.matches) vLon = vLat = 0;
     if (!cancelled && moved < 6) {
       vLon = vLat = 0;
@@ -473,7 +478,6 @@
     vLon = vLat = 0;
     lon0 = normalize(lon0 + turn[0]);
     lat0 = clamp(lat0 + turn[1], -65, 65);
-    lastInteract = performance.now();
     redraw();
     kick();
   });
