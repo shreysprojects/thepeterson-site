@@ -110,7 +110,10 @@
   const palette = (() => {
     const css = getComputedStyle(document.documentElement);
     const read = (name, fallback) => css.getPropertyValue(name).trim() || fallback;
-    return { ivory: read('--globe', '#f8f7ef'), muted: read('--muted', '#a8b7ca'), navy: read('--navy', '#101d35') };
+    return {
+      ivory: read('--globe', '#f8f7ef'), muted: read('--muted', '#a8b7ca'), navy: read('--navy', '#101d35'),
+      globeBody: read('--globe-body', '#16263f'), globeLight: read('--globe-light', '#1d3152')
+    };
   })();
   function rgba(hex, alpha) {
     let h = String(hex).replace('#', '');
@@ -135,7 +138,7 @@
   let size = 0, radius = 0, dpr = 1, cellSize = 8, spriteSize = 12;
   let cells = null, oceanLayer = null, sprites = null;
   let lon0 = -34, lat0 = 26, vLon = 0, vLat = 0;
-  const SPIN = 4.5; // degrees per second
+  const SPIN = 7.2; // degrees per second: one turn every 50 seconds, as on the original site
   let dragging = false, moved = 0, lastX = 0, lastY = 0, flight = null, spin = SPIN;
   let paused = false, visible = true, selected = 'montreal', frame = 0, lastTime = 0;
   let sun = sunVector(), marks = [];
@@ -167,13 +170,19 @@
       u: Float32Array.from(u), v: Float32Array.from(v), z: Float32Array.from(z), limb: Float32Array.from(limb)
     };
 
-    // The ocean dots and soft glow never change, so draw them once per size. No outline:
-    // the globe's edge is simply where the dots end.
+    // The globe's body, ocean dots and soft glow never change, so draw them once per size.
+    // No outline: the body is a slightly lighter navy than the page, so the round shape reads
+    // against the background on its own.
     oceanLayer = document.createElement('canvas');
     oceanLayer.width = canvas.width;
     oceanLayer.height = canvas.height;
     const o = oceanLayer.getContext('2d');
     o.scale(dpr, dpr);
+    const body = o.createRadialGradient(centre - radius * .3, centre - radius * .35, 0, centre, centre, radius);
+    body.addColorStop(0, palette.globeLight);
+    body.addColorStop(1, palette.globeBody);
+    o.fillStyle = body;
+    o.beginPath(); o.arc(centre, centre, radius, 0, Math.PI * 2); o.fill();
     const glow = o.createRadialGradient(centre - radius * .35, centre - radius * .4, radius * .1, centre, centre, radius * 1.05);
     glow.addColorStop(0, rgba(palette.ivory, .07));
     glow.addColorStop(1, rgba(palette.ivory, 0));
